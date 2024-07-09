@@ -38,4 +38,3 @@ samples, guidance on mobile development, and a full API reference.
 - in **main.dart file define the routes parameter** ,it takes a map, which is a group of keys and values  
 - keys are strings with the name of the routes and the values are the builders that call a specific page  
 - after setting the routes in the main.dart file , set ontap function in intro_page.dart  
-  

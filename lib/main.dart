@@ -1,4 +1,6 @@
+import 'package:experiences_project/pages/diary_page.dart';
 import 'package:experiences_project/pages/fav_page.dart';
+import 'package:experiences_project/pages/gratitude_page.dart';
 import 'package:experiences_project/pages/intro_page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +18,8 @@ class ExpApp extends StatelessWidget {
       routes : {
         '/' : (context) => const IntroPage(),
         '/fav' : (context) => const FavPage(),
+        '/diary': (context) => const DiaryPage(),
+        '/grateful': (context) => const GratitudePage(),
       },
       initialRoute: '/',
       // home:const IntroPage() //if we set the initial route , we can't set the home also , so remove it

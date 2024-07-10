@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 import validator from "validator"
 
 
-// login user
+//! login user
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -34,7 +34,7 @@ const createToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET)
 }
 
-// register user
+//! register user
 const registerUser = async (req, res) => {
     const { name, password, email } = req.body;
     try {

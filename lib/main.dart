@@ -1,7 +1,9 @@
-import 'package:experiences_project/pages/diary_page.dart';
-import 'package:experiences_project/pages/fav_page.dart';
-import 'package:experiences_project/pages/gratitude_page.dart';
-import 'package:experiences_project/pages/intro_page.dart';
+import 'package:experiences_project/pallete.dart';
+import 'package:experiences_project/screens/diary_page.dart';
+import 'package:experiences_project/screens/fav_page.dart';
+import 'package:experiences_project/screens/gratitude_page.dart';
+// import 'package:experiences_project/screens/intro_page.dart';
+import 'package:experiences_project/screens/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,9 +16,11 @@ class ExpApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.grey),
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: Pallete.backgroundColorLoginPg
+      ),
       routes : {
-        '/' : (context) => const IntroPage(),
+        '/' : (context) => const LoginPage(),
         '/fav' : (context) => const FavPage(),
         '/diary': (context) => const DiaryPage(),
         '/grateful': (context) => const GratitudePage(),

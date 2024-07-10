@@ -1,3 +1,4 @@
+import 'package:experiences_project/pallete.dart';
 import 'package:flutter/material.dart';
 import '../shared/menu_drawer.dart';
 import '../shared/menu_bottom.dart';
@@ -8,7 +9,7 @@ class IntroPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 191, 135, 219),
+        backgroundColor: Pallete.appBar,
         title: const Text("Tell Your Tale"),
         centerTitle: true,
       ),
@@ -16,15 +17,15 @@ class IntroPage extends StatelessWidget {
       drawer: const MenuDrawer(),
 
       bottomNavigationBar:const MenuBottom(
-              backgroundColor:  Color.fromARGB(255, 191, 135, 219),
+              backgroundColor:  Pallete.bottomNavigationBar,
               currentIndex: 0,
       ),
-      backgroundColor: const Color.fromARGB(255, 191, 135, 219),
+      backgroundColor: Pallete.bottomNavigationBar,
 
       body: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('assets/home_pg_img.jpg'),
+                  image: AssetImage('assets/images/home_pg_img.jpg'),
                   fit: BoxFit.cover)),
           child: Center(
               child: Container(

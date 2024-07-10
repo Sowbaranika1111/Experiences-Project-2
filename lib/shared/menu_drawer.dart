@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../pages/intro_page.dart';
-import '../pages/fav_page.dart';
+import '../screens/intro_page.dart';
+import '../screens/fav_page.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({super.key});

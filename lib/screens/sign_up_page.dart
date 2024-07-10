@@ -1,11 +1,11 @@
 import 'package:experiences_project/pallete.dart';
-import 'package:experiences_project/widgets/login_field.dart';
+import 'package:experiences_project/screens/login_page.dart';
 import 'package:experiences_project/widgets/sign_in_btn.dart';
-import 'package:experiences_project/screens/sign_up_page.dart';
+import 'package:experiences_project/widgets/sign_up_field.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class SignUpPage extends StatelessWidget {
+  const SignUpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,36 +26,36 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               const Text(
-                "Sign In",
+                "Sign Up",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 40,
                 ),
               ),
               const SizedBox(height: 30),
+              const SignUpField(hintText: "Name"),
               const SizedBox(height: 10),
-              const LoginField(hintText: "Email"),
+              const SignUpField(hintText: "Email"),
               const SizedBox(height: 10),
-              const LoginField(hintText: "Password"),
+              const SignUpField(hintText: "Password"),
               const SizedBox(height: 20),
               const SigninButton(),
               const SizedBox(height: 25),
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const SignUpPage()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
                 child: RichText(
                   text: const TextSpan(
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.white70, fontSize: 18),
                       children: [
-                        TextSpan(text: "Create New Account?  "),
+                        TextSpan(text: "Existing User? "),
                         TextSpan(
-                            text: "Click here",
+                            text: "Login",
                             style:
                                 TextStyle(color: Pallete.clickHere, fontSize: 20
-
                                     // decoration: TextDecoration.underline,
                                     )),
                       ]),

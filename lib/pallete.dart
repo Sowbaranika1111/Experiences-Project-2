@@ -6,6 +6,7 @@ class Pallete {
   static const Color bottomNavigationBar = Color.fromARGB(255, 191, 135, 219);
   static const Color inputFieldBordersBfr = Color.fromARGB(255, 44, 5, 64);
   static const Color inputFieldBordersAftr = Color.fromARGB(255, 65, 23, 86);
+  static const Color clickHere = Color.fromARGB(255, 174, 33, 220);
 
 
 }

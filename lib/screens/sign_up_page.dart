@@ -23,7 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void _onSignUpSuccess() async {
     try {
-      debugPrint("Attempting sign up...");
+      // debugPrint("Attempting sign up...");
       var regBody = {
         "name": nameController.text,
         "email": emailController.text,
@@ -56,7 +56,6 @@ class _SignUpPageState extends State<SignUpPage> {
         ));
       }
     } catch (e) {
-      // Handle any exceptions that occur during the process
       debugPrint("Error during sign up: $e");
     }
   }

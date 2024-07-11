@@ -38,3 +38,34 @@ samples, guidance on mobile development, and a full API reference.
 - in **main.dart file define the routes parameter** ,it takes a map, which is a group of keys and values  
 - keys are strings with the name of the routes and the values are the builders that call a specific page  
 - after setting the routes in the main.dart file , set ontap function in intro_page.dart  
+
+### Shared Preference
+
+- to store the user token in the application itself we make use of state preference, if the response is successful
+  
+- in pubspec.yaml file make use of the package shared_preference  
+- initialize the shared preference in necessary places for the usage
+- In login_page.dart `late SharedPreferences` prefs -prefs can be any name
+  
+```dart
+class _SignUpPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  late SharedPreferences prefs;
+
+//initialising SharedPreferences in init state
+  @override
+  void initState() {
+    // implement initState
+    super.initState();
+    initSharedPref();
+  }
+
+//func to initialise our shared_preference
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+    // we can make use of this instance 'prefs' to store the data in SharedPreference
+  }
+}```

@@ -1,9 +1,13 @@
 import 'package:experiences_project/pallete.dart';
+import 'package:experiences_project/screens/intro_page.dart';
 import 'package:experiences_project/widgets/sign_in_btn.dart';
 import 'package:experiences_project/widgets/sign_up_field.dart';
 import 'package:experiences_project/screens/sign_up_page.dart';
-
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:experiences_project/configs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,16 +20,67 @@ class _SignUpPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  late SharedPreferences prefs;
 
+//initialising SharedPreferences in init state
   @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
+  void initState() {
+    // implement initState
+    super.initState();
+    initSharedPref();
   }
 
-  void _onSignUpSuccess() {
-    debugPrint("Sign up Successful!");
+//func to initialise our shared_preference
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+    // we can make use of this instance 'prefs' to store the data in SharedPreference
+  }
+
+  void _onSignUpSuccess() async {
+    try {
+      debugPrint("Attempting Signin!");
+
+      var loginBody = {
+        "email": emailController.text,
+        "password": passwordController.text,
+      };
+
+      //Sending to backend
+      var response = await http.post(Uri.parse(login),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(loginBody));
+
+      var jsonResponse = jsonDecode(response.body);
+
+      // Check if the widget is still mounted before using context
+      if (!mounted) return;
+
+      if (jsonResponse['success'] == true) {
+        //to store the user token in the application itself we make use of state preference, if the response is successful
+        //in pubspec.yaml file make use of the package shared_preference
+
+        var myToken = jsonResponse['tokenValue'];
+        prefs.setString('tokenValue', myToken); //store the token in prefs
+
+        debugPrint('Response body: $jsonResponse');
+
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Login Successful! Listen , Share and Evolve!'),
+        ));
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const IntroPage()));
+      } else {
+        // Handle error responses
+        debugPrint("Sign in failed: ${response.statusCode}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Email does not exist. Do Register!'),
+        ));
+      }
+    } catch (e) {
+      debugPrint("Error during sign in: $e");
+    }
   }
 
   @override
@@ -79,7 +134,7 @@ class _SignUpPageState extends State<LoginPage> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
+                        return 'Please enter a password!';
                       }
                       if (value.length < 7) {
                         return 'Password must be at least 6 characters long!';

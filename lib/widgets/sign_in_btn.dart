@@ -1,9 +1,16 @@
 import 'package:experiences_project/pallete.dart';
-import 'package:experiences_project/screens/intro_page.dart';
+// import 'package:experiences_project/screens/intro_page.dart';
 import 'package:flutter/material.dart';
 
 class SigninButton extends StatelessWidget {
-  const SigninButton({super.key});
+  final GlobalKey<FormState> formKey;
+  final VoidCallback onSignUpSuccess;
+
+  const SigninButton({
+    super.key,
+    required this.formKey,
+    required this.onSignUpSuccess,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +20,10 @@ class SigninButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(25)),
         child: ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const IntroPage())
-              );
+              if (formKey.currentState!.validate()) {
+                debugPrint('Form is valid. Proceeding with sign up.');
+                onSignUpSuccess();
+              }
             },
             style: ElevatedButton.styleFrom(
               fixedSize: const Size(295, 55),
@@ -23,9 +31,9 @@ class SigninButton extends StatelessWidget {
               shadowColor: Colors.transparent,
             ),
             child: const Icon(
-              Icons.fingerprint,
+              Icons.double_arrow_rounded,
               color: Colors.white,
-              size: 24,
+              size: 34,
             )));
   }
 }

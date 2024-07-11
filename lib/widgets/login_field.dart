@@ -4,9 +4,20 @@ import 'package:flutter/material.dart';
 class LoginField extends StatelessWidget {
     //every time we initialise the login field , it needs to appear , so passing it as constructor value
   final String hintText;
-  const LoginField({super.key,required this.hintText});
-  
+  final TextEditingController controller;
+  final TextInputType keyboardType;
+  final bool obscureText;
+  final String? Function(String?)? validator;
 
+  const LoginField({
+    super.key,
+    required this.hintText,
+    required this.controller,
+    this.keyboardType = TextInputType.text,
+    this.obscureText = false,
+    this.validator,
+  });
+  
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -14,6 +25,12 @@ class LoginField extends StatelessWidget {
         maxWidth: 400,
       ),
       child: TextFormField(
+
+        controller: controller,
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        validator: validator,
+
         decoration:  InputDecoration(
           contentPadding: const EdgeInsets.all(20),
           enabledBorder: OutlineInputBorder(
@@ -31,6 +48,7 @@ class LoginField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           hintText: hintText, // coming from the constructor
+          errorStyle: const TextStyle(color: Colors.red),
           )
         ),
       );

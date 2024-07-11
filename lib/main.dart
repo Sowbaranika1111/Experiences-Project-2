@@ -2,8 +2,8 @@ import 'package:experiences_project/pallete.dart';
 import 'package:experiences_project/screens/diary_page.dart';
 import 'package:experiences_project/screens/fav_page.dart';
 import 'package:experiences_project/screens/gratitude_page.dart';
-// import 'package:experiences_project/screens/intro_page.dart';
-import 'package:experiences_project/screens/login_page.dart';
+import 'package:experiences_project/screens/intro_page.dart';
+// import 'package:experiences_project/screens/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -20,7 +20,7 @@ class ExpApp extends StatelessWidget {
         scaffoldBackgroundColor: Pallete.backgroundColorLoginPg
       ),
       routes : {
-        '/' : (context) => const LoginPage(),
+        '/' : (context) => const IntroPage(),
         '/fav' : (context) => const FavPage(),
         '/diary': (context) => const DiaryPage(),
         '/grateful': (context) => const GratitudePage(),

@@ -30,7 +30,7 @@ class MenuBottom extends StatelessWidget {
             Navigator.pushReplacementNamed(context, '/');
             break;
           case 1:
-            Navigator.pushNamed(context, '/');
+            Navigator.pushNamed(context, '/addyours');
             break;
           case 2:
             Navigator.pushReplacementNamed(context, '/fav');

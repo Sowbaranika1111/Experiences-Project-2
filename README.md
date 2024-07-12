@@ -68,4 +68,7 @@ class _SignUpPageState extends State<LoginPage> {
     prefs = await SharedPreferences.getInstance();
     // we can make use of this instance 'prefs' to store the data in SharedPreference
   }
-}```
+}
+```
+
+diff b/w button and elevated btn lrn  

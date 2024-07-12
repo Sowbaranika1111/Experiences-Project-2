@@ -1,4 +1,5 @@
 import 'package:experiences_project/pallete.dart';
+import 'package:experiences_project/screens/add_yours_page.dart';
 import 'package:experiences_project/screens/diary_page.dart';
 import 'package:experiences_project/screens/fav_page.dart';
 import 'package:experiences_project/screens/gratitude_page.dart';
@@ -21,6 +22,7 @@ class ExpApp extends StatelessWidget {
       ),
       routes : {
         '/' : (context) => const IntroPage(),
+        '/addyours' : (context) => const AddYoursPage(),
         '/fav' : (context) => const FavPage(),
         '/diary': (context) => const DiaryPage(),
         '/grateful': (context) => const GratitudePage(),

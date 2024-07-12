@@ -1,6 +1,5 @@
 import 'package:experiences_project/pallete.dart';
-// import 'package:experiences_project/widgets/video_record_field.dart';
-// import 'package:experiences_project/widgets/video_upload_field.dart';
+import 'package:experiences_project/widgets/dialogue_box_video_rec.dart';
 import 'package:flutter/material.dart';
 
 class AddYoursPage extends StatefulWidget {
@@ -16,8 +15,19 @@ class _AddYoursPageState extends State<AddYoursPage> {
   String? experienceCategory;
   final TextEditingController countryController = TextEditingController();
   final TextEditingController professionController = TextEditingController();
-  final TextEditingController meditatingExperienceController = TextEditingController();
-  final TextEditingController experienceDescriptionController = TextEditingController();
+  final TextEditingController meditatingExperienceController =
+      TextEditingController();
+  final TextEditingController experienceDescriptionController =
+      TextEditingController();
+
+  void _showUploadRecordOption() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const UploadRecordOption();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +55,25 @@ class _AddYoursPageState extends State<AddYoursPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _buildFormField('Age', _buildAgeDropdown()),
-                    _buildFormField('Country', _buildTextInput(countryController, 'Enter your country')),
-                    _buildFormField('Profession', _buildTextInput(professionController, 'Enter your profession')),
-                    _buildFormField('Meditating Experience', _buildTextInput(meditatingExperienceController, 'Eg: 2.3 years or 6 months')),
-                    _buildFormField('Experience Category', _buildExperienceCategoryDropdown()),
+                    _buildFormField(
+                        'Country',
+                        _buildTextInput(
+                            countryController, 'Enter your country')),
+                    _buildFormField(
+                        'Profession',
+                        _buildTextInput(
+                            professionController, 'Enter your profession')),
+                    _buildFormField(
+                        'Meditating Experience',
+                        _buildTextInput(meditatingExperienceController,
+                            'Eg: 2.3 years or 6 months')),
+                    _buildFormField('Experience Category',
+                        _buildExperienceCategoryDropdown()),
                     _buildFormField('Video', _buildVideoUploads()),
-                    _buildFormField('Experience Description', _buildTextArea(experienceDescriptionController, 'Few lines about your experience')),
+                    _buildFormField(
+                        'Experience Description',
+                        _buildTextArea(experienceDescriptionController,
+                            'Few lines about your experience')),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: _submitForm,
@@ -92,7 +115,8 @@ class _AddYoursPageState extends State<AddYoursPage> {
         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       ),
       hint: const Text('Select your age range'),
-      items: <String>['below 15', '16-30', '31-45', '46-60', 'above 60'].map<DropdownMenuItem<String>>((String value) {
+      items: <String>['below 15', '16-30', '31-45', '46-60', 'above 60']
+          .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -113,9 +137,11 @@ class _AddYoursPageState extends State<AddYoursPage> {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: hintText,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       ),
-      validator: (value) => value == null || value.isEmpty ? 'Please enter a value' : null,
+      validator: (value) =>
+          value == null || value.isEmpty ? 'Please enter a value' : null,
     );
   }
 
@@ -128,7 +154,17 @@ class _AddYoursPageState extends State<AddYoursPage> {
         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       ),
       hint: const Text('Select your experience category'),
-      items: <String>['Mental Health', 'Physical Health', 'Manifestations', 'Miracles', 'Healing', 'Visions', 'Messages Received', 'Meta Physical Experiences', 'Other Experiences'].map<DropdownMenuItem<String>>((String value) {
+      items: <String>[
+        'Mental Health',
+        'Physical Health',
+        'Manifestations',
+        'Miracles',
+        'Healing',
+        'Visions',
+        'Messages Received',
+        'Meta Physical Experiences',
+        'Other Experiences'
+      ].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -139,12 +175,27 @@ class _AddYoursPageState extends State<AddYoursPage> {
           experienceCategory = newValue;
         });
       },
-      validator: (value) => value == null ? 'Please select an experience category' : null,
+      validator: (value) =>
+          value == null ? 'Please select an experience category' : null,
     );
   }
 
-  Widget _buildVideoUploads(){
-    return TextFormField(); //add dialogue box here
+  Widget _buildVideoUploads() {
+    return GestureDetector(
+        onTap: _showUploadRecordOption,
+        child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: const Row(
+              children: [
+                Icon(Icons.camera),
+                SizedBox(width:8.0),
+                Text("Upload or Record a Video"),
+              ],
+            )));
   }
 
   Widget _buildTextArea(TextEditingController controller, String hintText) {
@@ -154,9 +205,11 @@ class _AddYoursPageState extends State<AddYoursPage> {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: hintText,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       ),
-      validator: (value) => value == null || value.isEmpty ? 'Please enter a description' : null,
+      validator: (value) =>
+          value == null || value.isEmpty ? 'Please enter a description' : null,
     );
   }
 
@@ -167,9 +220,11 @@ class _AddYoursPageState extends State<AddYoursPage> {
       debugPrint('Age: $age');
       debugPrint('Country: ${countryController.text}');
       debugPrint('Profession: ${professionController.text}');
-      debugPrint('Meditating Experience: ${meditatingExperienceController.text}');
+      debugPrint(
+          'Meditating Experience: ${meditatingExperienceController.text}');
       debugPrint('Experience Category: $experienceCategory');
-      debugPrint('Experience Description: ${experienceDescriptionController.text}');
+      debugPrint(
+          'Experience Description: ${experienceDescriptionController.text}');
     }
   }
 }

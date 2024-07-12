@@ -71,4 +71,24 @@ class _SignUpPageState extends State<LoginPage> {
 }
 ```
 
-diff b/w button and elevated btn lrn  
+**diff b/w button and elevated btn lrn  
+**
+
+`late html.VideoElement _preview;`  
+
+### late
+
+- The late keyword in Dart is used to declare a non-nullable variable that will be initialized later before it is used. This is useful for variables that cannot be immediately initialized in the constructor but are guaranteed to be initialized before any use  
+
+### html.VideoElement
+
+- html.VideoElement is a type from the dart:html library, which provides HTML elements for web applications. VideoElement specifically represents the HTML `<video>` element, which is used to embed video content on web pages
+
+##### Variable Declaration:
+
+- _preview is a variable that will hold an instance of html.VideoElement. This element can be used to create a video preview within a web context
+
+##### Display recording result
+
+- In the last step, we want to display the recording result. Here we use VideoElement again with control to play the video. While recording, we can get **Blob** data, which we need to save while recording. When it’s finished, we should set the URL into our result’s VideoElement  
+  

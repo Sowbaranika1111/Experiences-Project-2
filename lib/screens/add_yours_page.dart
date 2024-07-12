@@ -1,4 +1,6 @@
 import 'package:experiences_project/pallete.dart';
+// import 'package:experiences_project/widgets/video_record_field.dart';
+// import 'package:experiences_project/widgets/video_upload_field.dart';
 import 'package:flutter/material.dart';
 
 class AddYoursPage extends StatefulWidget {
@@ -47,6 +49,7 @@ class _AddYoursPageState extends State<AddYoursPage> {
                     _buildFormField('Profession', _buildTextInput(professionController, 'Enter your profession')),
                     _buildFormField('Meditating Experience', _buildTextInput(meditatingExperienceController, 'Eg: 2.3 years or 6 months')),
                     _buildFormField('Experience Category', _buildExperienceCategoryDropdown()),
+                    _buildFormField('Video', _buildVideoUploads()),
                     _buildFormField('Experience Description', _buildTextArea(experienceDescriptionController, 'Few lines about your experience')),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -138,6 +141,10 @@ class _AddYoursPageState extends State<AddYoursPage> {
       },
       validator: (value) => value == null ? 'Please select an experience category' : null,
     );
+  }
+
+  Widget _buildVideoUploads(){
+    return TextFormField(); //add dialogue box here
   }
 
   Widget _buildTextArea(TextEditingController controller, String hintText) {

@@ -2,6 +2,7 @@ import 'package:experiences_project/pallete.dart';
 import 'package:flutter/material.dart';
 import '../shared/menu_drawer.dart';
 import '../shared/menu_bottom.dart';
+import 'package:experiences_project/widgets/category_scrolling.dart';
 class IntroPage extends StatelessWidget {
   const IntroPage({super.key});
 
@@ -23,23 +24,13 @@ class IntroPage extends StatelessWidget {
       backgroundColor: Pallete.bottomNavigationBar,
 
       body: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/home_pg_img.jpg'),
-                  fit: BoxFit.cover)),
+          color: Pallete.backgroundColorLoginPg,
+          
           child: Center(
+              // ignore: avoid_unnecessary_containers
               child: Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white70),
-                  child: const Text(
-                    "Listen Share Evolve",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 28, shadows: [
-                      Shadow(offset: Offset(1.0, 1.0), blurRadius: 1.0)
-                    ]),
-                  )
+               child:const CategoryScrollingSection()
+                  
                   )
                   )
                   ),

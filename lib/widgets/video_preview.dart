@@ -5,11 +5,13 @@ import 'package:video_player/video_player.dart';
 class VideoPreviewPage extends StatefulWidget {
   final File videoFile;
   final String videoPath;
+  final Function(File) onVideoConfirmed;
 
   const VideoPreviewPage({
     super.key,
     required this.videoFile,
     required this.videoPath,
+    required this.onVideoConfirmed,
   });
 
   @override
@@ -101,10 +103,8 @@ class _VideoPreviewPageState extends State<VideoPreviewPage> {
                           });
                         },
                       ),
-                      
                       IconButton(
-                        icon: const Icon(Icons.cancel,
-                        color:Colors.red),
+                        icon: const Icon(Icons.cancel, color: Colors.red),
                         iconSize: 44,
                         onPressed: () {
                           Navigator.pop(context, false);
@@ -114,7 +114,7 @@ class _VideoPreviewPageState extends State<VideoPreviewPage> {
                       IconButton(
                         icon: const Icon(Icons.check),
                         onPressed: () {
-                          Navigator.pop(context, true);
+                          Navigator.pop(context, widget.videoFile);
                           // Optionally, handle the confirmation action here
                         },
                       ),

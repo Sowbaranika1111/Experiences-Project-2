@@ -19,20 +19,26 @@ class UploadRecordOption extends StatelessWidget {
         // Check if the widget is still mounted before navigating
         if ( context.mounted) {
           debugPrint("Context is mounted, attempting to navigate...");
-          Navigator.of(context).push(
+          final result = Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => VideoPreviewPage(
                 videoFile: file,
                 videoPath: path,
+                onVideoConfirmed: (confirmedVideo){
+                  Navigator.of(context).pop(confirmedVideo);
+                }
               ),
-            ),
-          ).then((_) {
-            if (context.mounted) {
-              debugPrint("Navigation completed");
-            } else {
-              debugPrint("Context is not mounted after navigation");
+            ),);
+            if (result is File){
+              Navigator.pop(context,result);
             }
-          });
+          // ).then((_) {
+          //   if (context.mounted) {
+          //     debugPrint("Navigation completed");
+          //   } else {
+          //     debugPrint("Context is not mounted after navigation");
+          //   }
+          // });
         } else {
           debugPrint("Context is not mounted!");
         }

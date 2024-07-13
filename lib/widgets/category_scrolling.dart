@@ -56,7 +56,7 @@ class CategoryScrollingSection extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 20.0), // Adjust padding as needed
+            padding: const EdgeInsets.only(top: 20.0), 
             child: ClipOval(
               child: Image.asset(
                 imagePath,
@@ -69,12 +69,12 @@ class CategoryScrollingSection extends StatelessWidget {
           const SizedBox(height: 5.0),
           SizedBox(
             width: 100.0,
-            height: 50.0, // Increased width for better text fit
+            height: 50.0, 
             child: Text(
               text,
               textAlign: TextAlign.center,
               maxLines: 2,
-              // overflow: TextOverflow.ellipsis,
+              // overflow: TextOverflow.ellipsis, //uncomment thi and chk
               style: const TextStyle(fontSize: 15),
             ),
           ),

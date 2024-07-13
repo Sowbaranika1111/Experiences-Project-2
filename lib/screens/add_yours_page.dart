@@ -192,7 +192,7 @@ class _AddYoursPageState extends State<AddYoursPage> {
             child: const Row(
               children: [
                 Icon(Icons.camera),
-                SizedBox(width:8.0),
+                SizedBox(width: 8.0),
                 Text("Upload or Record a Video"),
               ],
             )));

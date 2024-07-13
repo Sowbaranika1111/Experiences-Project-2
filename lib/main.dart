@@ -4,10 +4,14 @@ import 'package:experiences_project/screens/diary_page.dart';
 import 'package:experiences_project/screens/fav_page.dart';
 import 'package:experiences_project/screens/gratitude_page.dart';
 import 'package:experiences_project/screens/intro_page.dart';
-// import 'package:experiences_project/screens/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 
-void main() {
+late List<CameraDescription> cameras;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   runApp(const ExpApp());
 }
 

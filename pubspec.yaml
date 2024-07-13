@@ -33,7 +33,9 @@ dependencies:
   http:
   shared_preferences:
   jwt_decoder:
-  universal_html:
+  image_picker:
+  image_picker_platform_interface:
+  camera:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

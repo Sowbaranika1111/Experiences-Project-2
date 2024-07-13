@@ -4,14 +4,9 @@ import 'package:experiences_project/widgets/video_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UploadRecordOption extends StatefulWidget {
+class UploadRecordOption extends StatelessWidget {
   const UploadRecordOption({super.key});
 
-  @override
-  State<UploadRecordOption> createState() => _UploadRecordOptionState();
-}
-
-class _UploadRecordOptionState extends State<UploadRecordOption> {
   Future<void> getVideoFile(
       BuildContext context, ImageSource sourceVideo) async {
     try {

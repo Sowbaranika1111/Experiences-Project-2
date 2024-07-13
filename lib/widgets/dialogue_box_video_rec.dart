@@ -1,8 +1,9 @@
 import 'dart:io';
+
 import 'package:experiences_project/widgets/video_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:experiences_project/widgets/camera_utils.dart';
+
 class UploadRecordOption extends StatefulWidget {
   const UploadRecordOption({super.key});
 
@@ -11,26 +12,34 @@ class UploadRecordOption extends StatefulWidget {
 }
 
 class _UploadRecordOptionState extends State<UploadRecordOption> {
-  @override
-  void initState() {
-    super.initState();
-    setUpCameraDelegate();
-  }
-
   Future<void> getVideoFile(
       BuildContext context, ImageSource sourceVideo) async {
     try {
       final videoFile = await ImagePicker().pickVideo(source: sourceVideo);
       if (videoFile != null) {
-        if (context.mounted) {
+        final File file = File(videoFile.path);
+        final String path = videoFile.path;
+        debugPrint("Video selected: $path");
+
+        // Check if the widget is still mounted before navigating
+        if ( context.mounted) {
+          debugPrint("Context is mounted, attempting to navigate...");
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => VideoPreviewPage(
-                videoFile: File(videoFile.path),
-                videoPath: videoFile.path,
+                videoFile: file,
+                videoPath: path,
               ),
             ),
-          );
+          ).then((_) {
+            if (context.mounted) {
+              debugPrint("Navigation completed");
+            } else {
+              debugPrint("Context is not mounted after navigation");
+            }
+          });
+        } else {
+          debugPrint("Context is not mounted!");
         }
       } else {
         debugPrint("No video file selected!");
@@ -45,9 +54,7 @@ class _UploadRecordOptionState extends State<UploadRecordOption> {
             content: Text("Failed to pick video: $e"),
             actions: [
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text("OK"),
               ),
             ],
@@ -64,7 +71,6 @@ class _UploadRecordOptionState extends State<UploadRecordOption> {
         // For picking video from the gallery
         SimpleDialogOption(
           onPressed: () {
-            Navigator.pop(context); // Close the dialog
             getVideoFile(context, ImageSource.gallery);
           },
           child: const Row(
@@ -89,7 +95,6 @@ class _UploadRecordOptionState extends State<UploadRecordOption> {
         // For capturing video
         SimpleDialogOption(
           onPressed: () {
-            Navigator.pop(context); // Close the dialog
             getVideoFile(context, ImageSource.camera);
           },
           child: const Row(
@@ -111,7 +116,7 @@ class _UploadRecordOptionState extends State<UploadRecordOption> {
           ),
         ),
 
-        // For cancel option
+        // Cancel option
         SimpleDialogOption(
           onPressed: () {
             Navigator.pop(context); // Close the dialog

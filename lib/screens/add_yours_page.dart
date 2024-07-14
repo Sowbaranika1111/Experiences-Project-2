@@ -1,9 +1,6 @@
 import 'package:experiences_project/pallete.dart';
 import 'package:experiences_project/widgets/dialogue_box_video_rec.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-// import 'package:experiences_project/widgets/video_preview.dart';
-import 'dart:io';
 
 class AddYoursPage extends StatefulWidget {
   const AddYoursPage({super.key});
@@ -23,44 +20,13 @@ class _AddYoursPageState extends State<AddYoursPage> {
   final TextEditingController experienceDescriptionController =
       TextEditingController();
 
-  File? selectedVideoFile;
-  VideoPlayerController? videoPlayerController;
-
-  void _showUploadRecordOption() async {
-    final result = await showDialog(
+  void _showUploadRecordOption() {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return const UploadRecordOption();
       },
     );
-
-    if (result != null  && result is File) {
-      debugPrint("Video file selected: ${result.path}");
-      setState(() {
-        selectedVideoFile = result;
-      });
-      _initializeVideoPlayer();
-    }
-  }
-
-  void _initializeVideoPlayer() {
-    if (selectedVideoFile != null) {
-      debugPrint(
-          "Initializing video player with file: ${selectedVideoFile!.path}");
-      videoPlayerController
-          ?.dispose(); //Dispose of the old controller if it exists
-      videoPlayerController = VideoPlayerController.file(selectedVideoFile!)
-        ..initialize().then((_) {
-          setState(() {}); //this will rebuild the widget with the new video
-          videoPlayerController?.play();
-        });
-    }
-  }
-
-  @override
-  void dispose() {
-    videoPlayerController?.dispose();
-    super.dispose();
   }
 
   @override
@@ -216,36 +182,20 @@ class _AddYoursPageState extends State<AddYoursPage> {
 
   Widget _buildVideoUploads() {
     return GestureDetector(
-      onTap: _showUploadRecordOption,
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-               
-                ElevatedButton(
-                  onPressed: _showUploadRecordOption,
-                  child: const Text("Upload/Record Video"),
-                ),
-              ],
+        onTap: _showUploadRecordOption,
+        child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.0),
             ),
-            if (selectedVideoFile != null && videoPlayerController != null)
-
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: AspectRatio(
-                  aspectRatio: videoPlayerController!.value.aspectRatio,
-                  child: VideoPlayer(videoPlayerController!),
-              ),),
-          ],
-        ),
-      ),
-    );
+            child: const Row(
+              children: [
+                Icon(Icons.camera),
+                SizedBox(width: 8.0),
+                Text("Upload or Record a Video"),
+              ],
+            )));
   }
 
   Widget _buildTextArea(TextEditingController controller, String hintText) {
@@ -275,9 +225,6 @@ class _AddYoursPageState extends State<AddYoursPage> {
       debugPrint('Experience Category: $experienceCategory');
       debugPrint(
           'Experience Description: ${experienceDescriptionController.text}');
-      if(selectedVideoFile != null){
-        debugPrint("Selected video path: ${selectedVideoFile!.path}");
-      }
     }
   }
 }

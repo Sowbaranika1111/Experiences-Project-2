@@ -1,6 +1,8 @@
 import 'package:experiences_project/pallete.dart';
 import 'package:experiences_project/widgets/dialogue_box_video_rec.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:video_player/video_player.dart';
 
 class AddYoursPage extends StatefulWidget {
   const AddYoursPage({super.key});
@@ -19,16 +21,35 @@ class _AddYoursPageState extends State<AddYoursPage> {
       TextEditingController();
   final TextEditingController experienceDescriptionController =
       TextEditingController();
+  File? selectedVideoFile;
+  VideoPlayerController? videoPlayerController;
 
-  void _showUploadRecordOption() {
-    showDialog(
+  void _showUploadRecordOption() async {
+    final result = await showDialog<File>(
       context: context,
       builder: (BuildContext context) {
         return const UploadRecordOption();
       },
     );
+    
+  if (result != null){
+    setState((){
+      selectedVideoFile = result;
+    });
+    _initializeVideoPlayer();
+  }
   }
 
+void _initializeVideoPlayer() {
+  if (selectedVideoFile != null) {
+    videoPlayerController?.dispose();
+    videoPlayerController = VideoPlayerController.file(selectedVideoFile!)
+      ..initialize().then((_) {
+        setState(() {});
+        videoPlayerController?.play();
+      });
+  }
+}
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -180,23 +201,34 @@ class _AddYoursPageState extends State<AddYoursPage> {
     );
   }
 
-  Widget _buildVideoUploads() {
-    return GestureDetector(
-        onTap: _showUploadRecordOption,
-        child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5.0),
+Widget _buildVideoUploads() {
+  return GestureDetector(
+    onTap: _showUploadRecordOption,
+    child: Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Column(
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.camera),
+              SizedBox(width: 8.0),
+              Text("Upload or Record a Video"),
+            ],
+          ),
+          if (selectedVideoFile != null && videoPlayerController != null)
+            AspectRatio(
+              aspectRatio: videoPlayerController!.value.aspectRatio,
+              child: VideoPlayer(videoPlayerController!),
             ),
-            child: const Row(
-              children: [
-                Icon(Icons.camera),
-                SizedBox(width: 8.0),
-                Text("Upload or Record a Video"),
-              ],
-            )));
-  }
+        ],
+      ),
+    ),
+  );
+}
 
   Widget _buildTextArea(TextEditingController controller, String hintText) {
     return TextFormField(

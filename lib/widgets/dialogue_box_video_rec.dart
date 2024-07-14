@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:experiences_project/widgets/video_preview.dart';
+// import 'package:experiences_project/widgets/video_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,27 +15,28 @@ class UploadRecordOption extends StatelessWidget {
         final File file = File(videoFile.path);
         final String path = videoFile.path;
         debugPrint("Video selected: $path");
+        Navigator.of(context).pop(file);
 
         // Check if the widget is still mounted before navigating
-        if ( context.mounted) {
-          debugPrint("Context is mounted, attempting to navigate...");
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => VideoPreviewPage(
-                videoFile: file,
-                videoPath: path,
-              ),
-            ),
-          ).then((_) {
-            if (context.mounted) {
-              debugPrint("Navigation completed");
-            } else {
-              debugPrint("Context is not mounted after navigation");
-            }
-          });
-        } else {
-          debugPrint("Context is not mounted!");
-        }
+        // if ( context.mounted) {
+        //   debugPrint("Context is mounted, attempting to navigate...");
+        //   Navigator.of(context).push(
+        //     MaterialPageRoute(
+        //       builder: (context) => VideoPreviewPage(
+        //         videoFile: file,
+        //         videoPath: path,
+        //       ),
+        //     ),
+        //   ).then((_) {
+        //     if (context.mounted) {
+        //       debugPrint("Navigation completed");
+        //     } else {
+        //       debugPrint("Context is not mounted after navigation");
+        //     }
+        //   });
+        // } else {
+        //   debugPrint("Context is not mounted!");
+        // }
       } else {
         debugPrint("No video file selected!");
       }

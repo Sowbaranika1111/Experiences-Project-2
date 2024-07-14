@@ -21,31 +21,32 @@ const addExp = async (req, res) => {
         // throw new error("Simulated DB error") // to chk if the file is retained in the uploads
 
         const saveExpToDB = await experiences.save(); //this mthd isused to save data in the db
+        res.json({ success: true, message: "Experience added" })
 
-        if (saveExpToDB) {
-            //Remove the videos from the uploads folder after saving it in database
-            fs.unlink(`uploads/${video_filename}`, (err) => {
-                if (err) {
-                    console.error(`Failed to delete the file: ${video_filename}.Error:${err.message}`);
-                }
-                else {
-                    console.log(`Successfully deleted the file: ${video_filename}`)
-                }
-            });
-            res.json({ success: true, message: "Experience added" })
-        }
-        else {
-            throw new Error("Failed to save experience to database");
-        }
+        //     if (saveExpToDB) {
+        //         //Remove the videos from the uploads folder after saving it in database
+        //         fs.unlink(`uploads/${video_filename}`, (err) => {
+        //             if (err) {
+        //                 console.error(`Failed to delete the file: ${video_filename}.Error:${err.message}`);
+        //             }
+        //             else {
+        //                 console.log(`Successfully deleted the file: ${video_filename}`)
+        //             }
+        //         });
+        //         res.json({ success: true, message: "Experience added" })
+        //     }
+        //     else {
+        //         throw new Error("Failed to save experience to database");
+        //     }
     }
     catch (error) {
-        console.error("Error in addExp of expController.js: ",error.message);
+        console.error("Error in addExp of expController.js: ", error.message);
         console.error("Full error object:", error);
         res.status(500).json({
             success: false,
             message: "Error saving experience to database. Video file is preserved in uploads folder.",
             error: error.message  // This will be sent to the client
-        });     
+        });
     }
 }
 

@@ -15,7 +15,10 @@ class UploadRecordOption extends StatelessWidget {
         final File file = File(videoFile.path);
         final String path = videoFile.path;
         debugPrint("Video selected: $path");
-        Navigator.of(context).pop(file);
+        if (context.mounted) {
+          debugPrint("Context is mounted, attempting to navigate...");
+          Navigator.of(context).pop(file);
+        }
 
         // Check if the widget is still mounted before navigating
         // if ( context.mounted) {

@@ -348,7 +348,7 @@ final mimeType = lookupMimeType(selectedVideoFile!.path)?? 'video/webm';
 
         // Send the request
         var streamedResponse =
-            await request.send().timeout(const Duration(seconds: 60));
+            await request.send().timeout(const Duration(seconds: 120));
         var response = await http.Response.fromStream(streamedResponse);
 
         debugPrint('Response status: ${response.statusCode}');
@@ -359,12 +359,13 @@ final mimeType = lookupMimeType(selectedVideoFile!.path)?? 'video/webm';
 
           if (!mounted) return;
           if (jsonResponse['success'] == true) {
+            
             var myToken = jsonResponse['tokenValue'];
             prefs.setString('tokenValue', myToken);
 
             debugPrint('Response body: $jsonResponse');
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Thank you for sharing!'),
+              content: Text('Thankyou for sharing!'),
             ));
 
             Navigator.pushReplacement(context,

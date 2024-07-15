@@ -34,6 +34,8 @@
     <!-- permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
 
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

@@ -34,6 +34,7 @@ dependencies:
   shared_preferences:
   jwt_decoder:
   image_picker:
+  permission_handler:
   video_player: 
   path:
   mime:

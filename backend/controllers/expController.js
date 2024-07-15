@@ -57,9 +57,8 @@ const listExp = async (req, res) => {
         res.json({ success: true, data: exps })
     }
     catch (error) {
-        console.log("Error")
-        res.json({ success: false, message: "Error" })
-    }
+        console.error("Error in listExp of expController.js: ", error.message);
+        res.status(500).json({ success: false, message: "Error fetching experiences", error: error.message });    }
 }
 
 

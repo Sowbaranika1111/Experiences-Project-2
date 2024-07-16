@@ -1,9 +1,8 @@
-import 'package:experiences_project/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:experiences_project/configs.dart';
-// import 'package:experiences_project/pallete.dart';
+import 'package:experiences_project/pallete.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -18,6 +17,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
   String displayText = 'Fetching...';
   List<dynamic> listResponse = [];
   final List<ChewieController> _chewieControllers = [];
+  final Map<String, int> idToIndexMap = {};
 
   Future<void> expSubmitApiCall() async {
     try {
@@ -32,6 +32,9 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
           if (jsonResponse['data'] != null && jsonResponse['data'].isNotEmpty) {
             setState(() {
               listResponse = jsonResponse['data'];
+              for (int i = 0; i < listResponse.length; i++) {
+                idToIndexMap[listResponse[i]['_id']] = i;
+              }
               _initializeVideoControllers();
             });
           } else {
@@ -48,8 +51,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
       } else {
         debugPrint("Failed to fetch data. Status code: ${response.statusCode}");
         setState(() {
-          displayText =
-              "Failed to load data. Status code: ${response.statusCode}";
+          displayText = "Failed to load data. Status code: ${response.statusCode}";
         });
       }
     } catch (e) {
@@ -66,14 +68,14 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
         final videoUrl = '$videoBaseUrl${item['video']}';
         debugPrint("Initializing video: $videoUrl");
         try {
-          final videoPlayerController =
-              VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+          final videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
           await videoPlayerController.initialize();
 
           final chewieController = ChewieController(
             videoPlayerController: videoPlayerController,
             autoPlay: false,
             looping: true,
+            aspectRatio: 18 / 15,
             errorBuilder: (context, errorMessage) {
               return Center(
                 child: Text(
@@ -133,9 +135,9 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
           : ListView.builder(
               itemCount: _chewieControllers.length,
               itemBuilder: (context, index) {
+                final item = listResponse[index];
                 return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: containerColors[index % containerColors.length],
@@ -144,8 +146,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(10)),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                         child: AspectRatio(
                           aspectRatio: 16 / 9,
                           child: Chewie(controller: _chewieControllers[index]),
@@ -162,7 +163,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    listResponse[index]['exp_category'] ?? '',
+                                    item['exp_category'] ?? 'N/A',
                                     style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -173,7 +174,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '~${listResponse[index]['name'] ?? ''}',
+                                      '~${item['name'] ?? 'Anonymous'}',
                                       style: const TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w500,
@@ -182,7 +183,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      listResponse[index]['profession'] ?? '',
+                                      item['profession'] ?? 'N/A',
                                       style: const TextStyle(
                                           fontSize: 12, color: Pallete.fontColorExpDesc),
                                       textAlign: TextAlign.right,
@@ -193,7 +194,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              listResponse[index]['exp_desc'] ?? '',
+                              item['exp_desc'] ?? 'No description available',
                               style: const TextStyle(
                                   fontSize: 14, color: Pallete.fontColorExpDesc),
                               maxLines: 2,

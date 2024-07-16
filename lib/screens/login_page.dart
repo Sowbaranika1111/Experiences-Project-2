@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:experiences_project/configs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import "package:experiences_project/screens/profile_page.dart";
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -32,7 +33,7 @@ class _SignUpPageState extends State<LoginPage> {
 
 //func to initialise our shared_preference
 
-  void initSharedPref() async {
+  Future<void> initSharedPref() async {
     prefs = await SharedPreferences.getInstance();
     // we can make use of this instance 'prefs' to store the data in SharedPreference
   }
@@ -61,7 +62,7 @@ class _SignUpPageState extends State<LoginPage> {
         //in pubspec.yaml file make use of the package shared_preference
 
         var myToken = jsonResponse['tokenValue'];
-        prefs.setString('tokenValue', myToken); //store the token in prefs
+        prefs.setString('tokenValue', myToken); //store the token in prefs(SharedPreferences)
 
         debugPrint('Response body: $jsonResponse');
 
@@ -98,7 +99,7 @@ class _SignUpPageState extends State<LoginPage> {
                     height: MediaQuery.of(context).size.height *
                         0.3, // Adjust height as needed
                     child: Image.asset(
-                      'assets/images/signUpIn_img2.jpg',
+                      'assets/signUpIn_img2.jpg',
                       fit: BoxFit.cover,
                     ),
                   ),

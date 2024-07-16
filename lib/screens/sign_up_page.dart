@@ -75,7 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: MediaQuery.of(context).size.height *
                       0.3, // Adjust height as needed
                   child: Image.asset(
-                    'assets/images/signUpIn_img2.jpg',
+                    'assets/signUpIn_img2.jpg',
                     fit: BoxFit.cover,
                   ),
                 ),

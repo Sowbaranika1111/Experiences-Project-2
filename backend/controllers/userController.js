@@ -20,7 +20,7 @@ const loginUser = async (req, res) => {
         }
 
         const token = createToken(user._id);
-        res.json({ success: true, tokenValue : token })
+        res.json({ success: true, tokenValue: token, user: { name: user.name, email: user.email } })
 
     } catch (error) {
         console.log(error);
@@ -31,7 +31,7 @@ const loginUser = async (req, res) => {
 //create and send the token using the response to the user
 // defined an env variable JWT_SECRET
 const createToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET)
+    return jwt.sign({ id }, process.env.JWT_SECRET)
 }
 
 //! register user
@@ -64,12 +64,27 @@ const registerUser = async (req, res) => {
 
         const user = await newUser.save()
         const token = createToken(user._id)
-        res.json({ success: true, token })
+        res.json({ success: true, token, user: { name: user.name, email: user.email } })
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: "Error" })
     }
 }
 
+//! get user details
+const getUserDetails = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await userModel.findById(decoded.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.json({ success: true, user: { name: user.name, email: user.email } });
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+}
 
-export { loginUser, registerUser }
+export { loginUser, registerUser, getUserDetails }

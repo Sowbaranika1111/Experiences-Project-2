@@ -30,16 +30,17 @@ class MenuBottom extends StatelessWidget {
             Navigator.pushReplacementNamed(context, '/');
             break;
           case 1:
-            Navigator.pushNamed(context, '/addyours');
+          Navigator.pushNamed(context, '/grateful');
+            
             break;
           case 2:
-            Navigator.pushReplacementNamed(context, '/fav');
+            Navigator.pushNamed(context, '/addyours');
             break;
           case 3:
             Navigator.pushNamed(context, '/diary');
             break;
           case 4:
-            Navigator.pushNamed(context, '/grateful');
+            Navigator.pushNamed(context, '/profile');
             break;
         }
       },
@@ -52,24 +53,26 @@ class MenuBottom extends StatelessWidget {
           ),
           label: 'Home',
         ),
+
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.handshake_rounded,
+            // color: Color.fromARGB(255, 193, 111, 235),
+            size: 24.0,
+            ),
+            label: 'Gratitude',
+          ),
     
         BottomNavigationBarItem(
           icon: Icon(
             Icons.videocam_outlined,
             // color: Color.fromARGB(255, 193, 111, 235),
-            size: 24.0,
+            size: 26.0,
           ),
           label: 'Add Yours',
         ),
     
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.favorite_border_outlined,
-            // color: Color.fromARGB(255, 193, 111, 235),
-            size: 24.0,
-            ),
-            label: 'Favourites',
-          ),
+        
         BottomNavigationBarItem(
           icon: Icon(
             Icons.note_alt_rounded,
@@ -78,14 +81,16 @@ class MenuBottom extends StatelessWidget {
             ),
             label: 'Diary',
           ),
-        BottomNavigationBarItem(
+
+          BottomNavigationBarItem(
           icon: Icon(
-            Icons.handshake_rounded,
+            Icons.person_pin,
             // color: Color.fromARGB(255, 193, 111, 235),
             size: 24.0,
             ),
-            label: 'Gratitude',
-          )
+            label: 'Profile',
+          ),
+        
       ],
       // selectedItemColor: Colors.grey,
       // unselectedItemColor: const Color.fromARGB(255, 193, 111, 235),

@@ -28,7 +28,7 @@ class IntroPage extends StatelessWidget {
           children: const [
             CategoryScrollingSection(),
             SizedBox(height: 20),
-            ExpDisplayField(),
+            // ExpDisplayField(),
           ],
         ),
       ),

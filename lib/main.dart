@@ -17,7 +17,7 @@ class ExpApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Pallete.backgroundColorLoginPg
+        scaffoldBackgroundColor: Pallete.backgroundColorFullApp
       ),
       routes : {
         '/' : (context) => const IntroPage(),

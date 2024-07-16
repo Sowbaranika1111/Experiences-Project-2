@@ -1,8 +1,9 @@
+import 'package:experiences_project/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:experiences_project/configs.dart';
-import 'package:experiences_project/pallete.dart';
+// import 'package:experiences_project/pallete.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -113,12 +114,17 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Color> containerColors = [
+      Colors.blue.withOpacity(0.1),
+      Colors.green.withOpacity(0.1),
+      Colors.purple.withOpacity(0.1),
+    ];
+
     return Container(
       height: 400,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Pallete.appBar,
       ),
       child: _chewieControllers.isEmpty
           ? Center(
@@ -128,9 +134,76 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
               itemCount: _chewieControllers.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin: const EdgeInsets.all(8),
-                  height: 200,
-                  child: Chewie(controller: _chewieControllers[index]),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: containerColors[index % containerColors.length],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(10)),
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Chewie(controller: _chewieControllers[index]),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    listResponse[index]['exp_category'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Pallete.fontColorExpDesc),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '~${listResponse[index]['name'] ?? ''}',
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: Pallete.fontColorExpDesc),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      listResponse[index]['profession'] ?? '',
+                                      style: const TextStyle(
+                                          fontSize: 12, color: Pallete.fontColorExpDesc),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              listResponse[index]['exp_desc'] ?? '',
+                              style: const TextStyle(
+                                  fontSize: 14, color: Pallete.fontColorExpDesc),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),

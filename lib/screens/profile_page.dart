@@ -1,4 +1,5 @@
 import 'package:experiences_project/configs.dart';
+import 'package:experiences_project/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -28,7 +29,6 @@ class _ProfilePageState extends State<ProfilePage> {
     initSharedPreferences();
   }
 
-
   Future<void> _loadUserData() async {
     final token = prefs.getString('tokenValue');
     debugPrint('Token: $token');
@@ -40,8 +40,8 @@ class _ProfilePageState extends State<ProfilePage> {
           headers: {'Authorization': 'Bearer $token'},
         );
 
-      debugPrint('Response status: ${response.statusCode}');
-      debugPrint('Response body: ${response.body}');
+        debugPrint('Response status: ${response.statusCode}');
+        debugPrint('Response body: ${response.body}');
 
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
             email = data['user']['email'];
             isLoading = false;
           });
-          debugPrint('Name: $name, Email: $email'); 
+          debugPrint('Name: $name, Email: $email');
         } else {
           // Handle error
           debugPrint('Failed to load user data');
@@ -104,7 +104,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ElevatedButton(
                     onPressed: () async {
                       await prefs.remove('tokenValue');
-                      Navigator.of(context).pushReplacementNamed('/login');
+                      if (context.mounted) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                        );
+                      }
                     },
                     child: const Text('Logout'),
                   ),

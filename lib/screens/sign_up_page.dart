@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:experiences_project/configs.dart';
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -20,10 +22,25 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  late SharedPreferences prefs;
+
+//initialising SharedPreferences in init state
+  @override
+  void initState() {
+    // implement initState
+    super.initState();
+    initSharedPref();
+  }
+
+//func to initialise our shared_preference
+
+  Future<void> initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+    // we can make use of this instance 'prefs' to store the data in SharedPreference
+  }
 
   void _onSignUpSuccess() async {
     try {
-      // debugPrint("Attempting sign up...");
       var regBody = {
         "name": nameController.text,
         "email": emailController.text,
@@ -35,15 +52,23 @@ class _SignUpPageState extends State<SignUpPage> {
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(regBody));
 
-// Check if the widget is still mounted before using context
+      // Check if the widget is still mounted before using context
       if (!mounted) return;
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         var jsonResponse = jsonDecode(response.body);
         debugPrint('Response body: $jsonResponse');
         debugPrint("Sign up successful: ${jsonResponse['status']}");
+
+        // Save user details to SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('tokenValue', jsonResponse['token']);
+        await prefs.setString('userName', jsonResponse['user']['name']);
+        await prefs.setString('userEmail', jsonResponse['user']['email']);
+
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Registration Successful! Listen , Share and Evolve!'),
+          content: Text('Registration Successful! Listen, Share and Evolve!'),
         ));
 
         Navigator.pushReplacement(context,

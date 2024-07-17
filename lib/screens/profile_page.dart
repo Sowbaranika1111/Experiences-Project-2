@@ -1,9 +1,12 @@
 import 'package:experiences_project/configs.dart';
+import 'package:experiences_project/pallete.dart';
 import 'package:experiences_project/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,7 +20,8 @@ class _ProfilePageState extends State<ProfilePage> {
   String name = '';
   String email = '';
   bool isLoading = true;
-  // Map<String,dynamic> jsonResponse = {};
+  ChewieController? _chewieController;
+  Map<String, dynamic> userExpData = {};
 
   Future<void> initSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
@@ -54,10 +58,9 @@ class _ProfilePageState extends State<ProfilePage> {
           });
           debugPrint('Name: $name, Email: $email');
 
-          if(email.isNotEmpty){
-                      await _loadUserExpData(email);
+          if (email.isNotEmpty) {
+            await _loadUserExpData(email);
           }
-
         } else {
           // Handle error
           debugPrint('Failed to load user data');
@@ -93,7 +96,15 @@ class _ProfilePageState extends State<ProfilePage> {
           body: jsonEncode(regBody));
 
       if (detailResponse.statusCode == 200) {
-        var jsonResponse = jsonDecode(detailResponse.body) as Map<String,dynamic>;
+        var jsonResponse = jsonDecode(detailResponse.body);
+        if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
+          setState(() {
+            userExpData = jsonResponse['data'];
+            isLoading = false;
+          });
+          _initializeVideo();
+        }
+
         debugPrint(jsonResponse.toString());
       } else {
         debugPrint('Failed to load user experience data');
@@ -101,6 +112,43 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       debugPrint('Error: $e');
     }
+  }
+
+  Future<void> _initializeVideo() async {
+    if (userExpData['video'] != null && userExpData['video'].isNotEmpty) {
+      final videoUrl = '$videoBaseUrl${userExpData['video']}';
+      debugPrint("Initializing video: $videoUrl");
+
+      try {
+        final videoPlayerController =
+            VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+        await videoPlayerController.initialize();
+
+        setState(() {
+          _chewieController = ChewieController(
+              videoPlayerController: videoPlayerController,
+              autoPlay: false,
+              looping: true,
+              aspectRatio: 18 / 12,
+              errorBuilder: (context, errorMessage) {
+                return Center(
+                    child: Text(errorMessage,
+                        style:
+                            const TextStyle(color: Pallete.fontColorExpDesc)));
+              });
+        });
+
+        debugPrint("Video Initialized!");
+      } catch (e) {
+        debugPrint("Errorr occoured while initializing video : $e");
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _chewieController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -111,10 +159,16 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Center(
+          : SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  if (_chewieController != null)
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Chewie(controller: _chewieController!),
+                    ),
+                  const SizedBox(height: 20),
                   CircleAvatar(
                     radius: 50,
                     child: Text(
@@ -123,24 +177,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    'Name: $name',
-                    style: const TextStyle(fontSize: 20),
-                  ),
+                  Text('Name: $name', style: const TextStyle(fontSize: 20)),
                   const SizedBox(height: 10),
-                  Text(
-                    'Email: $email',
-                    style: const TextStyle(fontSize: 20),
-                  ),
+                  Text('Email: $email', style: const TextStyle(fontSize: 20)),
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  const SizedBox(height: 20),
+                  if (userExpData.isNotEmpty) ...[
+                    Text('Age: ${userExpData['age']}'),
+                    Text('Country: ${userExpData['country']}'),
+                    Text('Profession: ${userExpData['profession']}'),
+                    Text(
+                        'Meditating Experience: ${userExpData['meditating_experience']}'),
+                    Text('Experience Category: ${userExpData['exp_category']}'),
+                    Text('Experience Description: ${userExpData['exp_desc']}'),
+                  ],
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
                       await prefs.remove('tokenValue');
                       if (context.mounted) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
-                        );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
                       }
                     },
                     child: const Text('Logout'),

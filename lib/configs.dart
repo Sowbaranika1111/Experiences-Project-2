@@ -7,7 +7,7 @@ const login = '$url./api/user/login';
 const getUserDetails = '$url./api/user/getUser';
 
 const addYours = '$url./api/experiences/add';
-
 const getExp = '$url./api/experiences/list';
+const getUserExpDetails = '$url./api/experiences/userExpDetails';
 
 const videoBaseUrl = '$videoUrl/videos/';

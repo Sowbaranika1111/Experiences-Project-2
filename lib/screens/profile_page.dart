@@ -17,10 +17,12 @@ class _ProfilePageState extends State<ProfilePage> {
   String name = '';
   String email = '';
   bool isLoading = true;
+  // Map<String,dynamic> jsonResponse = {};
 
   Future<void> initSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
     await _loadUserData();
+    await _loadUserExpData(email);
   }
 
   @override
@@ -51,6 +53,11 @@ class _ProfilePageState extends State<ProfilePage> {
             isLoading = false;
           });
           debugPrint('Name: $name, Email: $email');
+
+          if(email.isNotEmpty){
+                      await _loadUserExpData(email);
+          }
+
         } else {
           // Handle error
           debugPrint('Failed to load user data');
@@ -58,6 +65,9 @@ class _ProfilePageState extends State<ProfilePage> {
             isLoading = false;
           });
         }
+
+        // final userExpDetails =
+        // );
       } catch (e) {
         debugPrint('Error: $e');
         setState(() {
@@ -68,6 +78,28 @@ class _ProfilePageState extends State<ProfilePage> {
       debugPrint('No token found');
       // No token found, navigate to login page
       Navigator.of(context).pushReplacementNamed('/login');
+    }
+  }
+
+  Future<void> _loadUserExpData(String email) async {
+    try {
+      var regBody = {
+        //what the api is accepting pass that here
+        "email": email
+      };
+
+      var detailResponse = await http.post(Uri.parse(getUserExpDetails),
+          headers: {"Content-type": "application/json"},
+          body: jsonEncode(regBody));
+
+      if (detailResponse.statusCode == 200) {
+        var jsonResponse = jsonDecode(detailResponse.body) as Map<String,dynamic>;
+        debugPrint(jsonResponse.toString());
+      } else {
+        debugPrint('Failed to load user experience data');
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
     }
   }
 

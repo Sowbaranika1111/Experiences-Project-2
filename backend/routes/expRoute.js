@@ -1,5 +1,5 @@
 import express from "express"
-import { addExp, listExp, removeExp } from "../controllers/expController.js"
+import { addExp, listExp, removeExp, getUserExpDetailsProfilePg } from "../controllers/expController.js"
 import multer from "multer" //to create video storage system
 
 //creating express router to create get mthd / post mthd / many other mthds
@@ -36,6 +36,10 @@ expRouter.post("/add", upload.single("video"), handleMulterError, addExp)
 
 // to display
 expRouter.get("/list", listExp)
+
+//display user detail in profile
+expRouter.post("/userExpDetails",getUserExpDetailsProfilePg)
+
 // to remove
 expRouter.post("/remove", removeExp)
 

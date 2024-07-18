@@ -1,5 +1,5 @@
 import 'package:experiences_project/pallete.dart';
-// import 'package:experiences_project/widgets/exp_display_field.dart';
+import 'package:experiences_project/widgets/exp_display_field.dart';
 import 'package:flutter/material.dart';
 import '../shared/menu_drawer.dart';
 import '../shared/menu_bottom.dart';
@@ -28,7 +28,7 @@ class IntroPage extends StatelessWidget {
           children: const [
             CategoryScrollingSection(),
             SizedBox(height: 20),
-            // ExpDisplayField(),
+            ExpDisplayField(),
           ],
         ),
       ),

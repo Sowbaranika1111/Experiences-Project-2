@@ -65,36 +65,32 @@ const listExp = async (req, res) => {
 const getUserExpDetailsProfilePg = async (req, res) => {
     const { email } = req.body;
     try {
-        const userData = await expModel.findOne({ email });
-        if (!userData) {
-            return res.json({ success: false, message: "User did not share any experiences yet!"})
-        }
-        else {
-            // const userExps = user
+        const userDataList = await expModel.find({ email });
+        if (userDataList.length === 0) {
+            return res.json({ success: false, message: "User did not share any experiences yet!" });
+        } else {
+            const data = userDataList.map(userData => ({
+                name: userData.name,
+                age: userData.age,
+                country: userData.country,
+                profession: userData.profession,
+                meditating_experience: userData.meditating_experience,
+                exp_category: userData.exp_category,
+                exp_desc: userData.exp_desc,
+                video: userData.video
+            }));
+
             return res.json({
                 success: true,
                 message: "User Experiences are found!",
-
-                data: {
-                    name: userData.name,
-                    age: userData.age,
-                    country: userData.country,
-                    profession: userData.profession,
-                    meditating_experience: userData.meditating_experience,
-                    exp_category: userData.exp_category,
-                    exp_desc: userData.exp_desc,
-                    video: userData.video
-                }
-            })
-
+                data: data
+            });
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
-        res.json({ success: false, message: "Error" })
-
+        res.json({ success: false, message: "Error" });
     }
-}
+};
 
 // remove experiences
 const removeExp = async (req, res) => {

@@ -11,3 +11,5 @@ const getExp = '$url./api/experiences/list';
 const getUserExpDetails = '$url./api/experiences/userExpDetails';
 
 const videoBaseUrl = '$videoUrl/videos/';
+
+const favVideo = '$url./api/fav/add';

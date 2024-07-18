@@ -6,6 +6,7 @@ import 'package:experiences_project/pallete.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:expandable/expandable.dart';
+import 'package:favorite_button/favorite_button.dart';
 
 class ExpDisplayField extends StatefulWidget {
   const ExpDisplayField({super.key});
@@ -116,7 +117,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
     }
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final List<Color> containerColors = [
@@ -153,7 +154,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                         borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(10)),
                         child: AspectRatio(
-                          aspectRatio: 20 / 16,
+                          aspectRatio: 18 / 18,
                           child: Chewie(controller: _chewieControllers[index]),
                         ),
                       ),
@@ -178,8 +179,15 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    // Add to favorite icon below the category
-                                    const Icon(Icons.star),
+                                    // Favourite Button
+                                    FavoriteButton(
+                                      isFavorite: false,
+                                      valueChanged: (isFavorite) {
+                                        debugPrint('Is Favorite : $isFavorite');
+                                      },
+                                      iconSize: 30,
+                                      iconColor: Colors.purple,
+                                    ),
                                   ],
                                 ),
                                 Column(

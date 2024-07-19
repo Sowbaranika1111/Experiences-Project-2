@@ -21,7 +21,11 @@ class _ProfilePageState extends State<ProfilePage> {
   String email = '';
   bool isLoading = true;
   ChewieController? _chewieController;
-  Map<String, dynamic> userExpData = {};
+
+  String displayText = 'Fetching...';
+  final List<ChewieController> _chewieControllers = [];
+  final Map<String, int> idToIndexMap = {};
+  List<Map<String, dynamic>> listResponse = [];
 
   Future<void> initSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
@@ -96,58 +100,89 @@ class _ProfilePageState extends State<ProfilePage> {
           body: jsonEncode(regBody));
 
       if (detailResponse.statusCode == 200) {
-        var jsonResponse = jsonDecode(detailResponse.body);
-        if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
-          setState(() {
-            userExpData = jsonResponse['data'];
-            isLoading = false;
-          });
-          _initializeVideo();
-        }
+        debugPrint("Data fetched successfully: ${detailResponse.body}");
 
-        debugPrint(jsonResponse.toString());
+        try {
+          var jsonResponse = jsonDecode(detailResponse.body);
+
+          if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
+            setState(() {
+              listResponse =
+                  List<Map<String, dynamic>>.from(jsonResponse['data']);
+              for (int i = 0; i < listResponse.length; i++) {
+                idToIndexMap[listResponse[i][email]] = i;
+              }
+              _initializeVideoControllers();
+
+              // isLoading = false;
+            });
+            // _initializeVideoControllers();
+          } else {
+            setState(() {
+              displayText = "No data available";
+            });
+          }
+        } catch (e) {
+          debugPrint("Error parsing JSON: $e");
+          setState(() {
+            displayText = "Error parsing data: $e";
+          });
+        }
       } else {
-        debugPrint('Failed to load user experience data');
+        debugPrint(
+            "Failed to fetch data. Status code: ${detailResponse.statusCode}");
+        setState(() {
+          displayText =
+              "Failed to load data. Status code: ${detailResponse.statusCode}";
+        });
       }
     } catch (e) {
       debugPrint('Error: $e');
     }
   }
 
-  Future<void> _initializeVideo() async {
-    if (userExpData['video'] != null && userExpData['video'].isNotEmpty) {
-      final videoUrl = '$videoBaseUrl${userExpData['video']}';
-      debugPrint("Initializing video: $videoUrl");
+  Future<void> _initializeVideoControllers() async {
+    for (var item in listResponse) {
+      if (item['video'] != null && item['video'].isNotEmpty) {
+        final videoUrl = ' $videoBaseUrl${item['video']}';
+        debugPrint(
+            "=========>Initializing video in profile page of the user<======= $videoUrl");
 
-      try {
-        final videoPlayerController =
-            VideoPlayerController.networkUrl(Uri.parse(videoUrl));
-        await videoPlayerController.initialize();
+        try {
+          final videoPlayerController =
+              VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+          await videoPlayerController.initialize();
 
-        setState(() {
-          _chewieController = ChewieController(
+          final chewieController = ChewieController(
               videoPlayerController: videoPlayerController,
               autoPlay: false,
               looping: true,
-              aspectRatio: 18 / 12,
+              aspectRatio: 18 / 15,
               errorBuilder: (context, errorMessage) {
                 return Center(
                     child: Text(errorMessage,
-                        style:
-                            const TextStyle(color: Pallete.fontColorExpDesc)));
+                        style: const TextStyle(color: Colors.white)));
               });
-        });
 
-        debugPrint("Video Initialized!");
-      } catch (e) {
-        debugPrint("Errorr occoured while initializing video : $e");
+          setState(() {
+            _chewieControllers.add(chewieController);
+          });
+
+          debugPrint("_________________Video initialized: ${item['video']}");
+        } catch (error) {
+          debugPrint("_____________-Error initializing video: $error");
+        }
+      } else {
+        debugPrint("Invalid video key for item: $item");
       }
     }
   }
 
   @override
   void dispose() {
-    _chewieController?.dispose();
+    for (var controller in _chewieControllers) {
+      controller.dispose;
+    }
     super.dispose();
   }
 
@@ -183,15 +218,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
-                  if (userExpData.isNotEmpty) ...[
-                    Text('Age: ${userExpData['age']}'),
-                    Text('Country: ${userExpData['country']}'),
-                    Text('Profession: ${userExpData['profession']}'),
-                    Text(
-                        'Meditating Experience: ${userExpData['meditating_experience']}'),
-                    Text('Experience Category: ${userExpData['exp_category']}'),
-                    Text('Experience Description: ${userExpData['exp_desc']}'),
-                  ],
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {

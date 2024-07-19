@@ -1,5 +1,5 @@
 import 'package:experiences_project/configs.dart';
-import 'package:experiences_project/pallete.dart';
+// import 'package:experiences_project/pallete.dart';
 import 'package:experiences_project/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String name = '';
   String email = '';
   bool isLoading = true;
-  ChewieController? _chewieController;
+  // ChewieController? _chewieController;
 
   String displayText = 'Fetching...';
   final List<ChewieController> _chewieControllers = [];
@@ -30,7 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> initSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
     await _loadUserData();
-    await _loadUserExpData(email);
+    // Remove this line as _loadUserData already calls _loadUserExpData
+    // await _loadUserExpData(email);
   }
 
   @override
@@ -66,15 +67,11 @@ class _ProfilePageState extends State<ProfilePage> {
             await _loadUserExpData(email);
           }
         } else {
-          // Handle error
           debugPrint('Failed to load user data');
           setState(() {
             isLoading = false;
           });
         }
-
-        // final userExpDetails =
-        // );
       } catch (e) {
         debugPrint('Error: $e');
         setState(() {
@@ -83,94 +80,96 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     } else {
       debugPrint('No token found');
-      // No token found, navigate to login page
       Navigator.of(context).pushReplacementNamed('/login');
     }
   }
 
   Future<void> _loadUserExpData(String email) async {
     try {
-      var regBody = {
-        //what the api is accepting pass that here
-        "email": email
-      };
+      var regBody = {"email": email};
 
-      var detailResponse = await http.post(Uri.parse(getUserExpDetails),
-          headers: {"Content-type": "application/json"},
-          body: jsonEncode(regBody));
+      var detailResponse = await http.post(
+        Uri.parse(getUserExpDetails),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(regBody),
+      );
 
       if (detailResponse.statusCode == 200) {
         debugPrint("Data fetched successfully: ${detailResponse.body}");
 
-        try {
-          var jsonResponse = jsonDecode(detailResponse.body);
+        var jsonResponse = jsonDecode(detailResponse.body);
 
-          if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
-            setState(() {
-              listResponse =
-                  List<Map<String, dynamic>>.from(jsonResponse['data']);
-              for (int i = 0; i < listResponse.length; i++) {
-                idToIndexMap[listResponse[i][email]] = i;
-              }
-              _initializeVideoControllers();
-
-              // isLoading = false;
-            });
-            // _initializeVideoControllers();
-          } else {
-            setState(() {
-              displayText = "No data available";
-            });
-          }
-        } catch (e) {
-          debugPrint("Error parsing JSON: $e");
+        if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
           setState(() {
-            displayText = "Error parsing data: $e";
+            listResponse = (jsonResponse['data'] as List).map((item) {
+              return {
+                'name': item['name']?.toString() ?? '',
+                'age': item['age']?.toString() ?? '',
+                'country': item['country']?.toString() ?? '',
+                'profession': item['profession']?.toString() ?? '',
+                'meditating_experience':
+                    item['meditating_experience']?.toString() ?? '',
+                'exp_category': item['exp_category']?.toString() ?? '',
+                'exp_desc': item['exp_desc']?.toString() ?? '',
+                'video': item['video']?.toString() ?? '',
+              };
+            }).toList();
+
+            _initializeVideoControllers();
+            displayText = "Data loaded successfully";
+          });
+        } else {
+          setState(() {
+            displayText = jsonResponse['message'] ?? "No data available";
           });
         }
       } else {
-        debugPrint(
-            "Failed to fetch data. Status code: ${detailResponse.statusCode}");
         setState(() {
-          displayText =
-              "Failed to load data. Status code: ${detailResponse.statusCode}";
+          displayText = "Failed to fetch data: ${detailResponse.statusCode}";
         });
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint("Error: $e");
+      setState(() {
+        displayText = "Error: $e";
+      });
     }
   }
+
+// ... rest of the code remains the same
 
   Future<void> _initializeVideoControllers() async {
     for (var item in listResponse) {
       if (item['video'] != null && item['video'].isNotEmpty) {
-        final videoUrl = ' $videoBaseUrl${item['video']}';
-        debugPrint(
-            "=========>Initializing video in profile page of the user<======= $videoUrl");
-
+        final videoUrl = '$videoBaseUrl${item['video']}';
+        debugPrint("Initializing video: $videoUrl");
         try {
           final videoPlayerController =
               VideoPlayerController.networkUrl(Uri.parse(videoUrl));
           await videoPlayerController.initialize();
 
           final chewieController = ChewieController(
-              videoPlayerController: videoPlayerController,
-              autoPlay: false,
-              looping: true,
-              aspectRatio: 18 / 15,
-              errorBuilder: (context, errorMessage) {
-                return Center(
-                    child: Text(errorMessage,
-                        style: const TextStyle(color: Colors.white)));
-              });
+            videoPlayerController: videoPlayerController,
+            autoPlay: false,
+            looping: true,
+            aspectRatio: 18 / 15,
+            errorBuilder: (context, errorMessage) {
+              return Center(
+                child: Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              );
+            },
+          );
 
           setState(() {
             _chewieControllers.add(chewieController);
           });
 
-          debugPrint("_________________Video initialized: ${item['video']}");
+          debugPrint("Video initialized: ${item['video']}");
         } catch (error) {
-          debugPrint("_____________-Error initializing video: $error");
+          debugPrint("Error initializing video: $error");
         }
       } else {
         debugPrint("Invalid video key for item: $item");
@@ -192,48 +191,114 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text('Profile'),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  if (_chewieController != null)
-                    AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: Chewie(controller: _chewieController!),
-                    ),
-                  const SizedBox(height: 20),
-                  CircleAvatar(
-                    radius: 50,
-                    child: Text(
-                      name.isNotEmpty ? name[0].toUpperCase() : '',
-                      style: const TextStyle(fontSize: 40),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text('Name: $name', style: const TextStyle(fontSize: 20)),
-                  const SizedBox(height: 10),
-                  Text('Email: $email', style: const TextStyle(fontSize: 20)),
-                  const SizedBox(height: 20),
-                  const Divider(),
-                  const SizedBox(height: 20),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await prefs.remove('tokenValue');
-                      if (context.mounted) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()));
-                      }
-                    },
-                    child: const Text('Logout'),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            CircleAvatar(
+              radius: 50,
+              child: Text(
+                name.isNotEmpty ? name[0].toUpperCase() : '',
+                style: const TextStyle(fontSize: 40),
               ),
             ),
+            const SizedBox(height: 20),
+            Text('Name: $name', style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 10),
+            Text('Email: $email', style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 20),
+            //!Logout button
+            ElevatedButton(
+              onPressed: () async {
+                await prefs.remove('tokenValue');
+                if (context.mounted) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()));
+                }
+              },
+              child: const Text('Logout'),
+            ),
+            const Divider(),
+            const SizedBox(height: 20),
+            Container(
+              height: 400,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: listResponse.isEmpty
+                  ? Center(
+                      child: Text(displayText,
+                          style: const TextStyle(color: Colors.black)),
+                    )
+                  : ListView.builder(
+                      itemCount: listResponse.length,
+                      itemBuilder: (context, index) {
+                        final item = listResponse[index];
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color.fromARGB(255, 63, 62, 62),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (_chewieControllers.length > index )
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(10)),
+                                  child: AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: Chewie(
+                                        controller: _chewieControllers[index]),
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Name: ${item['name']}',
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    Text('Age: ${item['age']}',
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    Text('Country: ${item['country']}',
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    Text('Profession: ${item['profession']}',
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    Text(
+                                        'Meditating Experience: ${item['meditating_experience']}',
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    Text(
+                                        'Experience Category: ${item['exp_category']}',
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    Text(
+                                        'Experience Description: ${item['exp_desc']}',
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -42,6 +42,9 @@ dependencies:
   chewie:
   expandable:
   favorite_button:
+  media_kit:
+  media_kit_video:
+  media_kit_libs_video:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -8,8 +8,11 @@ import 'package:experiences_project/screens/login_page.dart';
 import 'package:experiences_project/screens/profile_page.dart';
 import 'package:experiences_project/screens/sign_up_page.dart';
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   runApp(const ExpApp());
 }
 

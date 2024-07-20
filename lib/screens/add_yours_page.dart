@@ -319,7 +319,7 @@ class _AddYoursPageState extends State<AddYoursPage> {
       // a value of type string can't be assigned to the variable of type string error while directly assigning request.fields['age'] = age 
       //due to attempting to assign nullable types (String?) to non-nullable variables (String). Need to ensure that these values are non-null before assigning them to request.fields.
 
-        // Create a MultipartRequest , since File obj can't converted directly into json
+        // Create a MultipartRequest , since File obj can't be converted directly into json
         var request = http.MultipartRequest('POST', Uri.parse(addYours));
 
         // Add text fields

@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:chewie/chewie.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:chewie/chewie.dart';
+// import 'package:video_player/video_player.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -23,7 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // ChewieController? _chewieController;
 
   String displayText = 'Fetching...';
-  final List<ChewieController> _chewieControllers = [];
+  final List<Player> _players = [];
   final Map<String, int> idToIndexMap = {};
   List<Map<String, dynamic>> listResponse = [];
 
@@ -136,38 +138,22 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-// ... rest of the code remains the same
-
   Future<void> _initializeVideoControllers() async {
     for (var item in listResponse) {
       if (item['video'] != null && item['video'].isNotEmpty) {
         final videoUrl = '$videoBaseUrl${item['video']}';
         debugPrint("Initializing video: $videoUrl");
-        try {
-          final videoPlayerController =
-              VideoPlayerController.networkUrl(Uri.parse(videoUrl));
-          await videoPlayerController.initialize();
 
-          final chewieController = ChewieController(
-            videoPlayerController: videoPlayerController,
-            autoPlay: false,
-            looping: true,
-            aspectRatio: 18 / 15,
-            errorBuilder: (context, errorMessage) {
-              return Center(
-                child: Text(
-                  errorMessage,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              );
-            },
-          );
+        try {
+          final player = Player();
+          await player.open(Media(videoUrl));
 
           setState(() {
-            _chewieControllers.add(chewieController);
+            _players.add(player);
           });
 
           debugPrint("Video initialized: ${item['video']}");
+
         } catch (error) {
           debugPrint("Error initializing video: $error");
         }
@@ -179,8 +165,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void dispose() {
-    for (var controller in _chewieControllers) {
-      controller.dispose;
+    for (var player in _players) {
+      player.dispose();
     }
     super.dispose();
   }
@@ -195,31 +181,35 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 50,
-              child: Text(
-                name.isNotEmpty ? name[0].toUpperCase() : '',
-                style: const TextStyle(fontSize: 40),
-              ),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  child: Text(
+                    name.isNotEmpty ? name[0].toUpperCase() : '',
+                    style: const TextStyle(fontSize: 40),
+                  ),
+                ),
+                //!Logout button
+                ElevatedButton(
+                  onPressed: () async {
+                    await prefs.remove('tokenValue');
+                    if (context.mounted) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()));
+                    }
+                  },
+                  child: const Text('Logout'),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             Text('Name: $name', style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 10),
             Text('Email: $email', style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
-            //!Logout button
-            ElevatedButton(
-              onPressed: () async {
-                await prefs.remove('tokenValue');
-                if (context.mounted) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage()));
-                }
-              },
-              child: const Text('Logout'),
-            ),
             const Divider(),
             const SizedBox(height: 20),
             Container(
@@ -247,14 +237,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (_chewieControllers.length > index )
+                              if (_players.length > index)
                                 ClipRRect(
                                   borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(10)),
                                   child: AspectRatio(
                                     aspectRatio: 16 / 9,
-                                    child: Chewie(
-                                        controller: _chewieControllers[index]),
+                                    child: Video(
+                                        controller: VideoController(_players[index])),
                                   ),
                                 ),
                               Padding(

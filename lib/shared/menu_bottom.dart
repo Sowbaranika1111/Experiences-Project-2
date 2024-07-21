@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class MenuBottom extends StatelessWidget {
-
   final Color backgroundColor;
   final Color selectedItemColor;
   final Color unselectedItemColor;
@@ -10,7 +9,7 @@ class MenuBottom extends StatelessWidget {
   const MenuBottom({
     super.key,
     this.backgroundColor = const Color.fromARGB(255, 193, 111, 235),
-    this.selectedItemColor =  Colors.black,
+    this.selectedItemColor = Colors.black,
     this.unselectedItemColor = Colors.white,
     required this.currentIndex,
   });
@@ -24,22 +23,18 @@ class MenuBottom extends StatelessWidget {
       currentIndex: currentIndex,
 
       type: BottomNavigationBarType.fixed,
-      onTap:(int index) {
+      onTap: (int index) {
         switch (index) {
           case 0:
             Navigator.pushReplacementNamed(context, '/');
             break;
           case 1:
-          Navigator.pushNamed(context, '/grateful');
-            
-            break;
-          case 2:
             Navigator.pushNamed(context, '/addyours');
             break;
-          case 3:
+          case 2:
             Navigator.pushNamed(context, '/diary');
             break;
-          case 4:
+          case 3:
             Navigator.pushNamed(context, '/profile');
             break;
         }
@@ -53,16 +48,6 @@ class MenuBottom extends StatelessWidget {
           ),
           label: 'Home',
         ),
-
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.handshake_rounded,
-            // color: Color.fromARGB(255, 193, 111, 235),
-            size: 24.0,
-            ),
-            label: 'Gratitude',
-          ),
-    
         BottomNavigationBarItem(
           icon: Icon(
             Icons.videocam_outlined,
@@ -71,26 +56,22 @@ class MenuBottom extends StatelessWidget {
           ),
           label: 'Add Yours',
         ),
-    
-        
         BottomNavigationBarItem(
           icon: Icon(
             Icons.note_alt_rounded,
             // color: Color.fromARGB(255, 193, 111, 235),
             size: 24.0,
-            ),
-            label: 'Diary',
           ),
-
-          BottomNavigationBarItem(
+          label: 'Diary',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(
             Icons.person_pin,
             // color: Color.fromARGB(255, 193, 111, 235),
             size: 24.0,
-            ),
-            label: 'Profile',
           ),
-        
+          label: 'Profile',
+        ),
       ],
       // selectedItemColor: Colors.grey,
       // unselectedItemColor: const Color.fromARGB(255, 193, 111, 235),

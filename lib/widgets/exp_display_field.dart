@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:experiences_project/configs.dart';
@@ -7,7 +6,6 @@ import 'package:experiences_project/pallete.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:expandable/expandable.dart';
-// import 'package:favorite_button/favorite_button.dart';
 
 class ExpDisplayField extends StatefulWidget {
   const ExpDisplayField({super.key});
@@ -21,10 +19,6 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
   List<dynamic> listResponse = [];
   final List<ChewieController> _chewieControllers = [];
   final Map<String, int> idToIndexMap = {};
-
-  // late SharedPreferences prefs;
-  // String userId = '';
-  // String videoId = '';
 
   Future<void> expSubmitApiCall() async {
     try {
@@ -146,6 +140,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
               itemCount: _chewieControllers.length,
               itemBuilder: (context, index) {
                 final item = listResponse[index];
+
                 return Container(
                   margin:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 16),

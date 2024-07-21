@@ -7,6 +7,7 @@ import 'package:experiences_project/screens/intro_page.dart';
 import 'package:experiences_project/screens/login_page.dart';
 import 'package:experiences_project/screens/profile_page.dart';
 import 'package:experiences_project/screens/sign_up_page.dart';
+import 'package:experiences_project/widgets/diary_writing.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 
@@ -31,6 +32,7 @@ class ExpApp extends StatelessWidget {
         '/addyours': (context) => const AddYoursPage(),
         '/fav': (context) => const FavPage(),
         '/diary': (context) => const DiaryPage(),
+        '/diaryWriting': (context) => const DiaryWritingField(),
         '/grateful': (context) => const GratitudePage(),
         '/profile': (context) => const ProfilePage(),
       },

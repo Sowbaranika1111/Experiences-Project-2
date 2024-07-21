@@ -27,11 +27,11 @@ class _ProfilePageState extends State<ProfilePage> {
   final Map<String, int> idToIndexMap = {};
   List<Map<String, dynamic>> listResponse = [];
 
+  // final id;
+
   Future<void> initSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
     await _loadUserData();
-    // Remove this line as _loadUserData already calls _loadUserExpData
-    // await _loadUserExpData(email);
   }
 
   @override
@@ -103,6 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
           setState(() {
             listResponse = (jsonResponse['data'] as List).map((item) {
               return {
+                '_id': item['id']?.toString() ?? '',
                 'name': item['name']?.toString() ?? '',
                 'age': item['age']?.toString() ?? '',
                 'country': item['country']?.toString() ?? '',
@@ -136,7 +137,30 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-// ... rest of the code remains the same
+  Future<void> _deleteUserExp(String id) async {
+    try {
+      var regBody = {"_id": id};
+
+      var removeResponse = await http.post(
+        Uri.parse(removeUserExpDetails),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(regBody),
+      );
+
+      if (removeResponse.statusCode == 200) {
+        setState(() {
+          listResponse.removeWhere((item) => item['_id'] == id);
+        });
+
+        debugPrint(
+            "Remove Response=====================: ${removeResponse.body}");
+
+        debugPrint("Item deleted successfully: $id");
+      }
+    } catch (e) {
+      debugPrint("Error deleting the data! : $e");
+    }
+  }
 
   Future<void> _initializeVideoControllers() async {
     for (var item in listResponse) {
@@ -195,31 +219,36 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 50,
-              child: Text(
-                name.isNotEmpty ? name[0].toUpperCase() : '',
-                style: const TextStyle(fontSize: 40),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  child: Text(
+                    name.isNotEmpty ? name[0].toUpperCase() : '',
+                    style: const TextStyle(fontSize: 40),
+                  ),
+                ),
+                //!Logout button
+                ElevatedButton(
+                  onPressed: () async {
+                    await prefs.remove('tokenValue');
+                    if (context.mounted) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()));
+                    }
+                  },
+                  child: const Text('Logout'),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             Text('Name: $name', style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 10),
             Text('Email: $email', style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
-            //!Logout button
-            ElevatedButton(
-              onPressed: () async {
-                await prefs.remove('tokenValue');
-                if (context.mounted) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage()));
-                }
-              },
-              child: const Text('Logout'),
-            ),
             const Divider(),
             const SizedBox(height: 20),
             Container(
@@ -247,7 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (_chewieControllers.length > index )
+                              if (_chewieControllers.length > index)
                                 ClipRRect(
                                   borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(10)),
@@ -262,9 +291,36 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Name: ${item['name']}',
-                                        style: const TextStyle(
-                                            color: Colors.white)),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('Name: ${item['name']}',
+                                            style: const TextStyle(
+                                                color: Colors.white)),
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                            size: 18,
+                                          ),
+                                          onPressed: () async {
+                                            String itemId = item['_id'];
+                                            debugPrint(
+                                                'Id======================: $itemId');
+                                            await _deleteUserExp(itemId);
+                                            
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      content: Text(
+                                                          'Experience deleted!')));
+                                            }
+                                            await (_loadUserExpData(email));
+                                          },
+                                        )
+                                      ],
+                                    ),
                                     Text('Age: ${item['age']}',
                                         style: const TextStyle(
                                             color: Colors.white)),

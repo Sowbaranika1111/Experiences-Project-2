@@ -10,6 +10,8 @@ const addYours = '$url./api/experiences/add';
 const getExp = '$url./api/experiences/list';
 const getUserExpDetails = '$url./api/experiences/userExpDetails';
 
+const removeUserExpDetails = '$url./api/experiences/remove';
+
 const videoBaseUrl = '$videoUrl/videos/';
 
 const favVideo = '$url./api/fav/add';

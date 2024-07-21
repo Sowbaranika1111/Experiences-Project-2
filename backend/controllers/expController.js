@@ -70,6 +70,7 @@ const getUserExpDetailsProfilePg = async (req, res) => {
             return res.json({ success: false, message: "User did not share any experiences yet!" });
         } else {
             const data = userDataList.map(userData => ({
+                id: userData._id,
                 name: userData.name,
                 age: userData.age,
                 country: userData.country,
@@ -94,18 +95,25 @@ const getUserExpDetailsProfilePg = async (req, res) => {
 
 // remove experiences
 const removeExp = async (req, res) => {
+    const { _id } = req.body;
     try {
-        const exp = await expModel.findById(req.body.id);
-        fs.unlink(`uploads/${exp.video}`, () => { }) //dlting vdo from uploads folder
+        const exp = await expModel.findById(_id);
+        if (exp) {
+            fs.unlink(`uploads/${exp.video}`, (err) => {
+                if (err) console.error("Error deleting video file:", err);
+            });
 
-        await expModel.findByIdAndDelete(req.body.id);
-        res.json({ success: true, message: "Experience removed" });
+            await expModel.findByIdAndDelete(_id);
+            res.json({ success: true, message: "Experience removed" });
+        } else {
+            res.json({ success: false, message: "Experience not found" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error" });
     }
-    catch (error) {
-        console.log(error)
-        res.json({ success: false, message: "Error" })
-    }
-}
+};
+
 
 export { addExp, listExp, removeExp, getUserExpDetailsProfilePg }
 //this goes to expRoute.js

@@ -1,6 +1,8 @@
 import 'package:experiences_project/pallete.dart';
 import 'package:experiences_project/screens/add_yours_page.dart';
 import 'package:experiences_project/screens/diary_page.dart';
+import 'package:experiences_project/screens/fav_page.dart';
+import 'package:experiences_project/screens/gratitude_page.dart';
 import 'package:experiences_project/screens/intro_page.dart';
 import 'package:experiences_project/screens/login_page.dart';
 import 'package:experiences_project/screens/profile_page.dart';
@@ -28,8 +30,10 @@ class ExpApp extends StatelessWidget {
         '/register': (context) => const SignUpPage(),
         '/login': (context) => const LoginPage(),
         '/addyours': (context) => const AddYoursPage(),
+        '/fav': (context) => const FavPage(),
         '/diary': (context) => const DiaryPage(),
         '/diaryWriting': (context) => const DiaryWritingField(),
+        '/grateful': (context) => const GratitudePage(),
         '/profile': (context) => const ProfilePage(),
       },
       initialRoute: '/',

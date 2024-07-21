@@ -1,6 +1,7 @@
 import 'package:experiences_project/screens/sign_up_page.dart';
 import 'package:flutter/material.dart';
 import '../screens/intro_page.dart';
+import '../screens/fav_page.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({super.key});
@@ -41,11 +42,14 @@ class MenuDrawer extends StatelessWidget {
             case 'Home':
               pages = const IntroPage();
               break;
+            case 'Favourites':
+              pages = const FavPage();
+              break;
             case 'Create New Account':
               pages = const SignUpPage();
               break;
           }
-          //wheen we close the any screen in drawer , the drawer opens again, to avoid this use pop() to remove drawer from the stack
+          //wheen we close the fav screen , the drawer opens again, to avoid this use pop() to remove remove drawer from the stack
           Navigator.of(context).pop();
           //to actually navigate to another screen , use navigator of the current context
           Navigator.of(context)

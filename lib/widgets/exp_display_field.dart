@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:experiences_project/configs.dart';
@@ -6,12 +7,10 @@ import 'package:experiences_project/pallete.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:expandable/expandable.dart';
+// import 'package:favorite_button/favorite_button.dart';
 
 class ExpDisplayField extends StatefulWidget {
-
-  final String category;
-
-  const ExpDisplayField({super.key, required this.category});
+  const ExpDisplayField({super.key});
 
   @override
   ExpDisplayFieldState createState() => ExpDisplayFieldState();
@@ -22,6 +21,10 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
   List<dynamic> listResponse = [];
   final List<ChewieController> _chewieControllers = [];
   final Map<String, int> idToIndexMap = {};
+
+  // late SharedPreferences prefs;
+  // String userId = '';
+  // String videoId = '';
 
   Future<void> expSubmitApiCall() async {
     try {
@@ -143,130 +146,122 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
               itemCount: _chewieControllers.length,
               itemBuilder: (context, index) {
                 final item = listResponse[index];
-                if (widget.category == 'All' ||
-                    widget.category == item['exp_category']) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: containerColors[index % containerColors.length],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(10)),
-                          child: AspectRatio(
-                            aspectRatio: 18 / 18,
-                            child:
-                                Chewie(controller: _chewieControllers[index]),
-                          ),
+                return Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: containerColors[index % containerColors.length],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(10)),
+                        child: AspectRatio(
+                          aspectRatio: 18 / 18,
+                          child: Chewie(controller: _chewieControllers[index]),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '~${item['exp_category'] ?? 'N/A'}',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: Pallete.fontColorExpDesc,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        '~${item['name'] ?? 'Anonymous'}',
-                                        style: const TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w500,
-                                            color: Pallete.fontColorExpDesc),
-                                        textAlign: TextAlign.right,
-                                      ),
-                                      const SizedBox(height: 1),
-                                      Text(
-                                        item['profession'] ?? 'N/A',
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Pallete.fontColorExpDesc),
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              ExpandableNotifier(
-                                child: Column(
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expandable(
-                                      collapsed: Text(
-                                        item['exp_desc'] ??
-                                            'No description available',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Pallete.fontColorExpDesc,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      expanded: Text(
-                                        item['exp_desc'] ??
-                                            'No description available',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Pallete.fontColorExpDesc,
-                                        ),
+                                    Text(
+                                      '~${item['exp_category'] ?? 'N/A'}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Pallete.fontColorExpDesc,
                                       ),
                                     ),
-                                    Builder(
-                                      builder: (context) {
-                                        var controller =
-                                            ExpandableController.of(context,
-                                                required: true)!;
-                                        return TextButton(
-                                          child: Text(
-                                            controller.expanded
-                                                ? "Show less"
-                                                : "Read more",
-                                            style: const TextStyle(
-                                                color: Colors.blue),
-                                          ),
-                                          onPressed: () {
-                                            controller.toggle();
-                                          },
-                                        );
-                                      },
+                                    const SizedBox(height: 2),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '~${item['name'] ?? 'Anonymous'}',
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: Pallete.fontColorExpDesc),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                    const SizedBox(height: 1),
+                                    Text(
+                                      item['profession'] ?? 'N/A',
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Pallete.fontColorExpDesc),
+                                      textAlign: TextAlign.right,
                                     ),
                                   ],
                                 ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            ExpandableNotifier(
+                              child: Column(
+                                children: [
+                                  Expandable(
+                                    collapsed: Text(
+                                      item['exp_desc'] ??
+                                          'No description available',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Pallete.fontColorExpDesc,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    expanded: Text(
+                                      item['exp_desc'] ??
+                                          'No description available',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Pallete.fontColorExpDesc,
+                                      ),
+                                    ),
+                                  ),
+                                  Builder(
+                                    builder: (context) {
+                                      var controller = ExpandableController.of(
+                                          context,
+                                          required: true)!;
+                                      return TextButton(
+                                        child: Text(
+                                          controller.expanded
+                                              ? "Show less"
+                                              : "Read more",
+                                          style: const TextStyle(
+                                              color: Colors.blue),
+                                        ),
+                                        onPressed: () {
+                                          controller.toggle();
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
     );

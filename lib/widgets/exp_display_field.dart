@@ -124,73 +124,6 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
     super.dispose();
   }
 
-  // Future<void> initSharedPreference() async {
-  //   prefs = await SharedPreferences.getInstance();
-  //   await _addToFavorites(videoId);
-  // }
-
-  // Future<void> _addToFavorites(String videoId) async {
-  //   final token = prefs.getString('tokenValue');
-  //   debugPrint('Token: $token');
-
-  //   if (token != null) {
-  //     try {
-  //       // Decode the JWT token
-  //       final parts = token.split('.');
-  //       if (parts.length != 3) {
-  //         throw Exception('Invalid token');
-  //       }
-
-  //       final payload = json.decode(
-  //           utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
-
-  //       final userId = payload['id'];
-  //       if (userId == null) {
-  //         throw Exception('User ID not found in token');
-  //       }
-
-  //       debugPrint('Decoded User ID: $userId');
-  //       var regBody = {
-  //         'userId': userId,
-  //         'videoId': videoId,
-  //       };
-  //       var favAddResponse = await http.post(
-  //         Uri.parse(favVideo),
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': 'Bearer $token',
-  //         },
-  //         body: json.encode(regBody),
-  //       );
-
-  //       if (favAddResponse.statusCode == 200) {
-  //         final responseData = json.decode(favAddResponse.body);
-  //         debugPrint("===========Fav=======Add========Response:$responseData");
-  //         if (responseData['success']) {
-  //           // ScaffoldMessenger.of(context).showSnackBar(
-  //           //   SnackBar(content: Text(responseData['message'])),
-  //           // );
-  //           debugPrint(
-  //               "===================>Video Added TO Fav<===================");
-  //         } else {
-  //           debugPrint(
-  //               "===================>Video Not Added To Fav<===================");
-  //           throw Exception(responseData['message']);
-  //         }
-  //       } else {
-  //         throw Exception('Failed to add to favorites');
-  //       }
-  //     } catch (error) {
-  //       // ScaffoldMessenger.of(context).showSnackBar(
-  //       //   SnackBar(content: Text('Error: $error')),
-  //       // );
-  //       debugPrint("===================>Error: <=====$error");
-  //     }
-  //   } else {
-  //     debugPrint("No token!");
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final List<Color> containerColors = [
@@ -252,22 +185,6 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    // Favourite Button
-                                    // FavoriteButton(
-                                    //   isFavorite: false,
-                                    //   valueChanged: (isFavorite) async {
-                                    //     debugPrint('Is Favorite : $isFavorite');
-                                    //     if (isFavorite) {
-                                    //       // String userId = item['_id'];
-                                    //       String videoId = item['video'];
-                                    //       debugPrint(
-                                    //           'User Id: $userId ************** Video Id: $videoId');
-                                    //       await _addToFavorites(videoId);
-                                    //     }
-                                    //   },
-                                    //   iconSize: 30,
-                                    //   iconColor: Colors.purple,
-                                    // ),
                                   ],
                                 ),
                                 Column(

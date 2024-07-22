@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema({
         required:true,
         unique:true},
     password: {type:String,required:true},
-    favData:{type:Object,default:{}},
     diaryData:{type:Object,default:{}},
     gratitudeData:{type:Object,default:{}},
 },{minimize:false})

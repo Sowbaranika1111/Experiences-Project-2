@@ -5,6 +5,7 @@ import cors from "cors"
 import { connectDB } from "./config/db.js"
 import expRouter from "./routes/expRoute.js"
 import userRouter from "./routes/userRoute.js"
+import diaryRouter from "./routes/diaryRouter.js"
 import 'dotenv/config'
 
 //app config
@@ -29,7 +30,7 @@ app.use("/videos",express.static('uploads')) //mounting uploads to videos(anyNam
 
 app.use("/api/user",userRouter)
 
-// app.use("/api/mySharedExperiences",mySharedExpRouter)
+app.use("/api/diary",diaryRouter)
 
 //When we hit the end point , we get this msg 
 app.get("/",(req,res)=>{ //using this req we are creating one response=>

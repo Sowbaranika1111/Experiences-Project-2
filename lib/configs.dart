@@ -7,11 +7,11 @@ const login = '$url./api/user/login';
 const getUserDetails = '$url./api/user/getUser';
 
 const addYours = '$url./api/experiences/add';
-const getExp = '$url./api/experiences/list';
-const getUserExpDetails = '$url./api/experiences/userExpDetails';
+const getExp = '$url./api/experiences/list'; //user and email from user db
 
+const getUserExpDetails = '$url./api/experiences/userExpDetails'; //exp details from exp db
 const removeUserExpDetails = '$url./api/experiences/remove';
 
 const videoBaseUrl = '$videoUrl/videos/';
 
-const favVideo = '$url./api/fav/add';
+const addDiary = '$url./api/diary/add';

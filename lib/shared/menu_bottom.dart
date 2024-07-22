@@ -32,7 +32,7 @@ class MenuBottom extends StatelessWidget {
             Navigator.pushNamed(context, '/addyours');
             break;
           case 2:
-            Navigator.pushNamed(context, '/diary');
+            Navigator.pushReplacementNamed(context, '/diary');
             break;
           case 3:
             Navigator.pushNamed(context, '/profile');
@@ -43,7 +43,6 @@ class MenuBottom extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.home,
-            // color: Color.fromARGB(255, 193, 111, 235),
             size: 24.0,
           ),
           label: 'Home',
@@ -51,7 +50,6 @@ class MenuBottom extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.videocam_outlined,
-            // color: Color.fromARGB(255, 193, 111, 235),
             size: 26.0,
           ),
           label: 'Add Yours',
@@ -59,7 +57,6 @@ class MenuBottom extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.note_alt_rounded,
-            // color: Color.fromARGB(255, 193, 111, 235),
             size: 24.0,
           ),
           label: 'Diary',
@@ -67,14 +64,11 @@ class MenuBottom extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.person_pin,
-            // color: Color.fromARGB(255, 193, 111, 235),
             size: 24.0,
           ),
           label: 'Profile',
         ),
       ],
-      // selectedItemColor: Colors.grey,
-      // unselectedItemColor: const Color.fromARGB(255, 193, 111, 235),
     );
   }
 }

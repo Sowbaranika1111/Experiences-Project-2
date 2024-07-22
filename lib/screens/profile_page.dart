@@ -27,8 +27,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final Map<String, int> idToIndexMap = {};
   List<Map<String, dynamic>> listResponse = [];
 
-  // final id;
-
   Future<void> initSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
     await _loadUserData();

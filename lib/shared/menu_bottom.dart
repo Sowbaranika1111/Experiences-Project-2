@@ -29,13 +29,13 @@ class MenuBottom extends StatelessWidget {
             Navigator.pushReplacementNamed(context, '/');
             break;
           case 1:
-            Navigator.pushNamed(context, '/addyours');
+            Navigator.pushReplacementNamed(context, '/addyours');
             break;
           case 2:
-            Navigator.pushNamed(context, '/diary');
+            Navigator.pushReplacementNamed(context, '/diary');
             break;
           case 3:
-            Navigator.pushNamed(context, '/profile');
+            Navigator.pushReplacementNamed(context, '/profile');
             break;
         }
       },

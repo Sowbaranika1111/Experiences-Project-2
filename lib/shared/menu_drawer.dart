@@ -48,6 +48,8 @@ class MenuDrawer extends StatelessWidget {
             case 'Create New Account':
               pages = const SignUpPage();
               break;
+            case 'Logout':
+              break;
           }
           //wheen we close any screen , the drawer opens again, to avoid this use pop() to remove remove drawer from the stack
           Navigator.of(context).pop();

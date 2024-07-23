@@ -3,7 +3,7 @@ import 'package:experiences_project/widgets/exp_display_field.dart';
 import 'package:flutter/material.dart';
 import '../shared/menu_drawer.dart';
 import '../shared/menu_bottom.dart';
-import 'package:experiences_project/widgets/category_scrolling.dart';
+// import 'package:experiences_project/widgets/category_scrolling.dart';
 
 class IntroPage extends StatelessWidget {
   const IntroPage({super.key});
@@ -26,8 +26,8 @@ class IntroPage extends StatelessWidget {
         color: Pallete.backgroundColorLoginPg,
         child: ListView(
           children: const [
-            CategoryScrollingSection(),
-            SizedBox(height: 20),
+            // CategoryScrollingSection(),
+            // SizedBox(height: 20),
             ExpDisplayField(),
           ],
         ),

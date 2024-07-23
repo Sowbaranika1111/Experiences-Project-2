@@ -8,34 +8,30 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:experiences_project/configs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import "package:experiences_project/screens/profile_page.dart";
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late SharedPreferences prefs;
 
-//initialising SharedPreferences in init state
+  // Initializing SharedPreferences in initState
   @override
   void initState() {
-    // implement initState
     super.initState();
     initSharedPref();
   }
 
-//func to initialise our shared_preference
-
+  // Function to initialize SharedPreferences
   Future<void> initSharedPref() async {
     prefs = await SharedPreferences.getInstance();
-    // we can make use of this instance 'prefs' to store the data in SharedPreference
   }
 
   void _onSignUpSuccess() async {
@@ -47,7 +43,7 @@ class _SignUpPageState extends State<LoginPage> {
         "password": passwordController.text,
       };
 
-      //Sending to backend
+      // Sending to backend
       var response = await http.post(Uri.parse(login),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(loginBody));
@@ -58,20 +54,18 @@ class _SignUpPageState extends State<LoginPage> {
       if (!mounted) return;
 
       if (jsonResponse['success'] == true) {
-        //to store the user token in the application itself we make use of state preference, if the response is successful
-        //in pubspec.yaml file make use of the package shared_preference
-
+        // Store the user token in SharedPreferences if the response is successful
         var myToken = jsonResponse['tokenValue'];
-        prefs.setString('tokenValue', myToken); //store the token in prefs(SharedPreferences)
+        prefs.setString('tokenValue', myToken);
 
         debugPrint('Response body: $jsonResponse');
 
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Login Successful! Listen , Share and Evolve!'),
+          content: Text('Login Successful! Listen, Share, and Evolve!'),
         ));
 
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const IntroPage()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const IntroPage()));
       } else {
         // Handle error responses
         debugPrint("Sign in failed: ${response.statusCode}");
@@ -82,6 +76,14 @@ class _SignUpPageState extends State<LoginPage> {
     } catch (e) {
       debugPrint("Error during sign in: $e");
     }
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the controllers when the widget is disposed
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,8 +98,7 @@ class _SignUpPageState extends State<LoginPage> {
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    height: MediaQuery.of(context).size.height *
-                        0.3, // Adjust height as needed
+                    height: MediaQuery.of(context).size.height * 0.3, // Adjust height as needed
                     child: Image.asset(
                       'assets/signUpIn_img2.jpg',
                       fit: BoxFit.cover,
@@ -166,7 +167,6 @@ class _SignUpPageState extends State<LoginPage> {
                             style: TextStyle(
                               color: Pallete.clickHere,
                               fontSize: 20,
-                              // decoration: TextDecoration.underline,
                             ),
                           ),
                         ],

@@ -1,6 +1,7 @@
 import 'package:experiences_project/configs.dart';
 // import 'package:experiences_project/pallete.dart';
 import 'package:experiences_project/screens/login_page.dart';
+import 'package:experiences_project/shared/menu_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -216,9 +217,10 @@ class _ProfilePageState extends State<ProfilePage> {
         title: const Text('Profile'),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -229,28 +231,34 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: const TextStyle(fontSize: 40),
                   ),
                 ),
-                //!Logout button
                 ElevatedButton(
                   onPressed: () async {
                     await prefs.remove('tokenValue');
                     if (context.mounted) {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()),
+                      );
                     }
                   },
                   child: const Text('Logout'),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             Text('Name: $name', style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 10),
             Text('Email: $email', style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             const Divider(),
             const SizedBox(height: 20),
+          
+            const Text(
+              'Your Experiences',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
             Container(
               height: 400,
               width: double.infinity,
@@ -309,7 +317,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             debugPrint(
                                                 'Id======================: $itemId');
                                             await _deleteUserExp(itemId);
-                                            
+
                                             if (context.mounted) {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(const SnackBar(
@@ -351,10 +359,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                     ),
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
+      bottomNavigationBar: const MenuBottom(currentIndex: 3),
     );
   }
 }

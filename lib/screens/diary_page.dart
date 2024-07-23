@@ -37,7 +37,7 @@ class _DiaryPageState extends State<DiaryPage> {
       ),
       bottomNavigationBar: const MenuBottom(
         backgroundColor: Color.fromARGB(255, 191, 135, 219),
-        currentIndex: 3,
+        currentIndex: 2,
       ),
     );
   }

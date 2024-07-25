@@ -22,6 +22,8 @@ const addExp = async (req, res) => {
 
         const saveExpToDB = await experiences.save(); //this mthd isused to save data in the db
         res.json({ success: true, message: "Experience added" })
+        console.log(saveExpToDB);
+
 
         // if (saveExpToDB) {
         //     //Remove the videos from the uploads folder after saving it in database

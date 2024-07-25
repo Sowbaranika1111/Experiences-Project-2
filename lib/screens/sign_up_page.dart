@@ -32,7 +32,7 @@ class _SignUpPageState extends State<SignUpPage> {
     initSharedPref();
   }
 
-//func to initialise our shared_preference
+//func to initialise our shared_preference named  prefs
 
   Future<void> initSharedPref() async {
     prefs = await SharedPreferences.getInstance();
@@ -125,7 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 SignUpField(
                   hintText: "Name",
                   controller: nameController,
-                  keyboardType: TextInputType.name,
+                  keyboardType: TextInputType.name, //specifies the type of keyboard that should be displayed when the text field is focused.
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Please enter your name!";

@@ -24,12 +24,12 @@ class _ProfilePageState extends State<ProfilePage> {
   // ChewieController? _chewieController;
 
   String displayText = 'Fetching...';
+  //constructor
   final List<ChewieController> _chewieControllers = [];
   final Map<String, int> idToIndexMap = {};
   List<Map<String, dynamic>> listResponse = [];
 
-  // final id;
-
+//method
   Future<void> initSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
     await _loadUserData();
@@ -164,6 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _initializeVideoControllers() async {
+    _chewieControllers.clear();
     for (var item in listResponse) {
       if (item['video'] != null && item['video'].isNotEmpty) {
         final videoUrl = '$videoBaseUrl${item['video']}';
@@ -253,7 +254,6 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 20),
             const Divider(),
             const SizedBox(height: 20),
-          
             const Text(
               'Your Experiences',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

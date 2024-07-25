@@ -18,20 +18,35 @@ class IntroPage extends StatelessWidget {
       ),
       drawer: const MenuDrawer(),
       bottomNavigationBar: const MenuBottom(
-        backgroundColor: Pallete.bottomNavigationBar,
+        backgroundColor: Colors.white,
         currentIndex: 0,
       ),
       backgroundColor: Pallete.bottomNavigationBar,
-      body: Container(
-        color: Pallete.backgroundColorLoginPg,
-        child: ListView(
-          children: const [
-            // CategoryScrollingSection(),
-            // SizedBox(height: 20),
-            ExpDisplayField(),
-          ],
-        ),
+      body: ListView(
+        children: const [
+          // CategoryScrollingSection(),
+          // SizedBox(height: 20),
+          ExpDisplayField(),
+        ],
       ),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+// body: Container(
+//         child: ListView(
+//           children: const [
+//             // CategoryScrollingSection(),
+//             // SizedBox(height: 20),
+//             ExpDisplayField(),
+//           ],
+//         ),
+//       ),

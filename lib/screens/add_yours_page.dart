@@ -10,7 +10,7 @@ import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
-// import 'package:experiences_project/widgets/video_preview.dart';
+import 'package:experiences_project/shared/menu_bottom.dart';
 
 class AddYoursPage extends StatefulWidget {
   const AddYoursPage({super.key});
@@ -54,12 +54,16 @@ class _AddYoursPageState extends State<AddYoursPage> {
 
   void _initializeVideoPlayer() {
     if (selectedVideoFile != null) {
-      videoPlayerController?.dispose();
-      videoPlayerController = VideoPlayerController.file(selectedVideoFile!)
+      videoPlayerController
+          ?.dispose(); //If a previous videoPlayerController exists, it's disposed of to free up resources
+      videoPlayerController = VideoPlayerController.file(
+          selectedVideoFile!) //A new VideoPlayerController is created with the selected file.
         ..initialize().then((_) {
-          setState(() {});
+          //It returns a Future that completes when the initialization is finished.
+          //then((_) { ... }) is a callback that runs when the Future returned by initialize() completes.
+          setState(
+              () {}); //It calls setState() to rebuild the widget ( to show the video).
           videoPlayerController?.play();
-          // videoPlayerController?.pause();
         });
     }
   }
@@ -126,6 +130,8 @@ class _AddYoursPageState extends State<AddYoursPage> {
             ),
           ),
         ),
+              bottomNavigationBar: const MenuBottom(currentIndex: 1),
+
       ),
     );
   }
@@ -304,8 +310,9 @@ class _AddYoursPageState extends State<AddYoursPage> {
 
   @override
   void initState() {
-    // implement initState
-    super.initState();
+    //'initState' is a method called immediately when the framework inserts the state object.
+
+    super.initState(); //parent class's initState() method is executed before any custom initialization.
     initSharedPref();
   }
 
@@ -313,13 +320,11 @@ class _AddYoursPageState extends State<AddYoursPage> {
     if (_formKey.currentState!.validate() && selectedVideoFile != null) {
       try {
         debugPrint('Attempting submission');
-      final nonNullableAge = age ?? ''; //  meaning of ??-null-coalescing operator
-      final nonNullableExperienceCategory = experienceCategory ?? '';
+        final nonNullableAge =
+            age ?? ''; //  meaning of ??-->null-coalescing operator
+        final nonNullableExperienceCategory = experienceCategory ?? '';
 
-      // a value of type string can't be assigned to the variable of type string error while directly assigning request.fields['age'] = age 
-      //due to attempting to assign nullable types (String?) to non-nullable variables (String). Need to ensure that these values are non-null before assigning them to request.fields.
-
-        // Create a MultipartRequest , since File obj can't be converted directly into json
+        //  to send both files and text data in a single HTTP request use MultipartRequest
         var request = http.MultipartRequest('POST', Uri.parse(addYours));
 
         // Add text fields
@@ -334,7 +339,8 @@ class _AddYoursPageState extends State<AddYoursPage> {
         request.fields['exp_desc'] = experienceDescriptionController.text;
 
 //Determining correct MIME type for the video file
-final mimeType = lookupMimeType(selectedVideoFile!.path)?? 'video/webm';
+        final mimeType =
+            lookupMimeType(selectedVideoFile!.path) ?? 'video/webm';
 
         // Add the video file
         var videoStream = http.ByteStream(selectedVideoFile!.openRead());
@@ -342,8 +348,8 @@ final mimeType = lookupMimeType(selectedVideoFile!.path)?? 'video/webm';
         var videoMultipartFile = http.MultipartFile(
             'video', videoStream, videoLength,
             filename: selectedVideoFile!.path.split('/').last,
-            contentType:MediaType.parse(mimeType));
-            
+            contentType: MediaType.parse(mimeType));
+
         request.files.add(videoMultipartFile);
 
         // Send the request
@@ -359,7 +365,6 @@ final mimeType = lookupMimeType(selectedVideoFile!.path)?? 'video/webm';
 
           if (!mounted) return;
           if (jsonResponse['success'] == true) {
-            
             var myToken = jsonResponse['tokenValue'];
             prefs.setString('tokenValue', myToken);
 
@@ -403,3 +408,9 @@ final mimeType = lookupMimeType(selectedVideoFile!.path)?? 'video/webm';
     }
   }
 }
+
+//The .. syntax is called a cascade notation, which allows to perform multiple operations on the same object.
+//initialize() is an asynchronous method that prepares the video player for playback.
+//It returns a Future that completes when the initialization is finished.
+//then((_) { ... }) is a callback that runs when the Future returned by initialize() completes.
+//The _ is a placeholder for the value returned by the Future, but it's not used here.

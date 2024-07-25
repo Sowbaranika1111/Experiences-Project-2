@@ -34,7 +34,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
             setState(() {
               listResponse = jsonResponse['data'];
               for (int i = 0; i < listResponse.length; i++) {
-                idToIndexMap[listResponse[i]['_id']] = i;
+                idToIndexMap[listResponse[i]['_id']] = i; // taking id of each item in the list and mappiing it to the list index i
               }
               _initializeVideoControllers();
             });

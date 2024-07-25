@@ -14,6 +14,88 @@ class ExpDisplayField extends StatefulWidget {
   ExpDisplayFieldState createState() => ExpDisplayFieldState();
 }
 
+class ExpandableTextWidget extends StatelessWidget {
+  final String text;
+
+  const ExpandableTextWidget({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final textSpan = TextSpan(
+          text: text,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Pallete.fontColorExpDesc,
+          ),
+        );
+
+        final textPainter = TextPainter(
+          text: textSpan,
+          maxLines: 2,
+          textDirection: TextDirection.ltr,
+        );
+
+        textPainter.layout(maxWidth: constraints.maxWidth);
+
+        final isTextOverflowing = textPainter.didExceedMaxLines;
+
+        if (isTextOverflowing) {
+          return ExpandableNotifier(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expandable(
+                  collapsed: Text(
+                    text,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Pallete.fontColorExpDesc,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  expanded: Text(
+                    text,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Pallete.fontColorExpDesc,
+                    ),
+                  ),
+                ),
+                Builder(
+                  builder: (context) {
+                    var controller =
+                        ExpandableController.of(context, required: true)!;
+                    return TextButton(
+                      child: Text(
+                        controller.expanded ? "Show less" : "Read more",
+                        style: const TextStyle(color: Colors.blue),
+                      ),
+                      onPressed: () {
+                        controller.toggle();
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        } else {
+          return Text(
+            text,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Pallete.fontColorExpDesc,
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
 class ExpDisplayFieldState extends State<ExpDisplayField> {
   String displayText = 'Fetching...';
   List<dynamic> listResponse = [];
@@ -21,7 +103,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
   final Map<String, int> idToIndexMap = {};
   bool isLoading = false;
   int currentPage = 1;
-  final int itemsPerPage = 10;
+  final int itemsPerPage = 5;
   bool hasMore = true;
 
   Future<void> expSubmitApiCall() async {
@@ -33,14 +115,17 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
 
     try {
       debugPrint("Attempting Fetching! Page: $currentPage");
-      var response = await http.get(Uri.parse('$getExp?page=$currentPage&limit=$itemsPerPage'));
+      var response = await http
+          .get(Uri.parse('$getExp?page=$currentPage&limit=$itemsPerPage'));
 
       if (response.statusCode == 200) {
         debugPrint("Data fetched successfully: ${response.body}");
 
         try {
           var jsonResponse = jsonDecode(response.body);
-          if (jsonResponse['data'] != null && jsonResponse['data'] is List && (jsonResponse['data'] as List).isNotEmpty) {
+          if (jsonResponse['data'] != null &&
+              jsonResponse['data'] is List &&
+              (jsonResponse['data'] as List).isNotEmpty) {
             var newData = jsonResponse['data'] as List;
             setState(() {
               listResponse.addAll(newData.cast<Map<String, dynamic>>());
@@ -51,7 +136,8 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
               currentPage++;
               hasMore = newData.length == itemsPerPage;
             });
-            await _initializeVideoControllers(newData.cast<Map<String, dynamic>>());
+            await _initializeVideoControllers(
+                newData.cast<Map<String, dynamic>>());
           } else {
             hasMore = false;
             if (listResponse.isEmpty) {
@@ -69,7 +155,8 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
       } else {
         debugPrint("Failed to fetch data. Status code: ${response.statusCode}");
         setState(() {
-          displayText = "Failed to load data. Status code: ${response.statusCode}";
+          displayText =
+              "Failed to load data. Status code: ${response.statusCode}";
         });
       }
     } catch (e) {
@@ -90,7 +177,8 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
         final videoUrl = '$videoBaseUrl${item['video']}';
         debugPrint("Initializing video: $videoUrl");
         try {
-          final videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+          final videoPlayerController =
+              VideoPlayerController.networkUrl(Uri.parse(videoUrl));
           await videoPlayerController.initialize();
 
           final chewieController = ChewieController(
@@ -150,7 +238,9 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: listResponse.isEmpty
-          ? Center(child: Text(displayText, style: const TextStyle(color: Colors.black)))
+          ? Center(
+              child: Text(displayText,
+                  style: const TextStyle(color: Colors.black)))
           : ListView.builder(
               itemCount: listResponse.length + (hasMore ? 1 : 0),
               itemBuilder: (context, index) {
@@ -171,7 +261,8 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                 final item = listResponse[index];
 
                 return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: containerColors[index % containerColors.length],
@@ -181,10 +272,12 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                     children: [
                       if (index < _chewieControllers.length)
                         ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(10)),
                           child: AspectRatio(
                             aspectRatio: 18 / 18,
-                            child: Chewie(controller: _chewieControllers[index]),
+                            child:
+                                Chewie(controller: _chewieControllers[index]),
                           ),
                         ),
                       Padding(
@@ -196,81 +289,60 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '~${item['exp_category'] ?? 'N/A'}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Pallete.fontColorExpDesc,
+                                Flexible(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '~${item['exp_category'] ?? 'N/A'}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Pallete.fontColorExpDesc,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                  ],
+                                      const SizedBox(height: 2),
+                                    ],
+                                  ),
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '~${item['name'] ?? 'Anonymous'}',
-                                      style: const TextStyle(
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  flex: 1,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '~${item['name'] ?? 'Anonymous'}',
+                                        style: const TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w500,
-                                          color: Pallete.fontColorExpDesc),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                    const SizedBox(height: 1),
-                                    Text(
-                                      item['profession'] ?? 'N/A',
-                                      style: const TextStyle(
+                                          color: Pallete.fontColorExpDesc,
+                                        ),
+                                        textAlign: TextAlign.right,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 1),
+                                      Text(
+                                        item['profession'] ?? 'N/A',
+                                        style: const TextStyle(
                                           fontSize: 12,
-                                          color: Pallete.fontColorExpDesc),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ],
+                                          color: Pallete.fontColorExpDesc,
+                                        ),
+                                        textAlign: TextAlign.right,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            ExpandableNotifier(
-                              child: Column(
-                                children: [
-                                  Expandable(
-                                    collapsed: Text(
-                                      item['exp_desc'] ?? 'No description available',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Pallete.fontColorExpDesc,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    expanded: Text(
-                                      item['exp_desc'] ?? 'No description available',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Pallete.fontColorExpDesc,
-                                      ),
-                                    ),
-                                  ),
-                                  Builder(
-                                    builder: (context) {
-                                      var controller = ExpandableController.of(context, required: true)!;
-                                      return TextButton(
-                                        child: Text(
-                                          controller.expanded ? "Show less" : "Read more",
-                                          style: const TextStyle(color: Colors.blue),
-                                        ),
-                                        onPressed: () {
-                                          controller.toggle();
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                            ExpandableTextWidget(
+                              text: item['exp_desc'] ??
+                                  'No description available',
                             ),
                           ],
                         ),

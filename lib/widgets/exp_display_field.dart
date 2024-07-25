@@ -19,29 +19,46 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
   List<dynamic> listResponse = [];
   final List<ChewieController> _chewieControllers = [];
   final Map<String, int> idToIndexMap = {};
+  bool isLoading = false;
+  int currentPage = 1;
+  final int itemsPerPage = 10;
+  bool hasMore = true;
 
   Future<void> expSubmitApiCall() async {
+    if (isLoading || !hasMore) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
     try {
-      debugPrint("Attempting Fetching!");
-      var response = await http.get(Uri.parse(getExp));
+      debugPrint("Attempting Fetching! Page: $currentPage");
+      var response = await http.get(Uri.parse('$getExp?page=$currentPage&limit=$itemsPerPage'));
 
       if (response.statusCode == 200) {
         debugPrint("Data fetched successfully: ${response.body}");
 
         try {
           var jsonResponse = jsonDecode(response.body);
-          if (jsonResponse['data'] != null && jsonResponse['data'].isNotEmpty) {
+          if (jsonResponse['data'] != null && jsonResponse['data'] is List && (jsonResponse['data'] as List).isNotEmpty) {
+            var newData = jsonResponse['data'] as List;
             setState(() {
-              listResponse = jsonResponse['data'];
-              for (int i = 0; i < listResponse.length; i++) {
-                idToIndexMap[listResponse[i]['_id']] = i; // taking id of each item in the list and mappiing it to the list index i
+              listResponse.addAll(newData.cast<Map<String, dynamic>>());
+              for (int i = 0; i < newData.length; i++) {
+                var id = newData[i]['_id']?.toString() ?? '';
+                idToIndexMap[id] = listResponse.length - newData.length + i;
               }
-              _initializeVideoControllers();
+              currentPage++;
+              hasMore = newData.length == itemsPerPage;
             });
+            await _initializeVideoControllers(newData.cast<Map<String, dynamic>>());
           } else {
-            setState(() {
-              displayText = "No data available";
-            });
+            hasMore = false;
+            if (listResponse.isEmpty) {
+              setState(() {
+                displayText = "No data available";
+              });
+            }
           }
         } catch (e) {
           debugPrint("Error parsing JSON: $e");
@@ -52,8 +69,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
       } else {
         debugPrint("Failed to fetch data. Status code: ${response.statusCode}");
         setState(() {
-          displayText =
-              "Failed to load data. Status code: ${response.statusCode}";
+          displayText = "Failed to load data. Status code: ${response.statusCode}";
         });
       }
     } catch (e) {
@@ -61,17 +77,20 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
       setState(() {
         displayText = "Error in fetching data: $e";
       });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
-  Future<void> _initializeVideoControllers() async {
-    for (var item in listResponse) {
+  Future<void> _initializeVideoControllers(List<dynamic> newItems) async {
+    for (var item in newItems) {
       if (item['video'] != null && item['video'].isNotEmpty) {
         final videoUrl = '$videoBaseUrl${item['video']}';
         debugPrint("Initializing video: $videoUrl");
         try {
-          final videoPlayerController =
-              VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+          final videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
           await videoPlayerController.initialize();
 
           final chewieController = ChewieController(
@@ -83,7 +102,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
               return Center(
                 child: Text(
                   errorMessage,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black),
                 ),
               );
             },
@@ -92,7 +111,6 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
           setState(() {
             _chewieControllers.add(chewieController);
           });
-
           debugPrint("Video initialized: ${item['video']}");
         } catch (error) {
           debugPrint("Error initializing video: $error");
@@ -107,7 +125,6 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
   void initState() {
     super.initState();
     expSubmitApiCall();
-    // initSharedPreference();
   }
 
   @override
@@ -132,18 +149,29 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
       ),
-      child: _chewieControllers.isEmpty
-          ? Center(
-              child: Text(displayText,
-                  style: const TextStyle(color: Colors.white)))
+      child: listResponse.isEmpty
+          ? Center(child: Text(displayText, style: const TextStyle(color: Colors.black)))
           : ListView.builder(
-              itemCount: _chewieControllers.length,
+              itemCount: listResponse.length + (hasMore ? 1 : 0),
               itemBuilder: (context, index) {
+                if (index == listResponse.length) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Center(
+                      child: isLoading
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: expSubmitApiCall,
+                              child: const Text('Load More'),
+                            ),
+                    ),
+                  );
+                }
+
                 final item = listResponse[index];
 
                 return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: containerColors[index % containerColors.length],
@@ -151,14 +179,14 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(10)),
-                        child: AspectRatio(
-                          aspectRatio: 18 / 18,
-                          child: Chewie(controller: _chewieControllers[index]),
+                      if (index < _chewieControllers.length)
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                          child: AspectRatio(
+                            aspectRatio: 18 / 18,
+                            child: Chewie(controller: _chewieControllers[index]),
+                          ),
                         ),
-                      ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Column(
@@ -211,8 +239,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                                 children: [
                                   Expandable(
                                     collapsed: Text(
-                                      item['exp_desc'] ??
-                                          'No description available',
+                                      item['exp_desc'] ?? 'No description available',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         color: Pallete.fontColorExpDesc,
@@ -221,8 +248,7 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     expanded: Text(
-                                      item['exp_desc'] ??
-                                          'No description available',
+                                      item['exp_desc'] ?? 'No description available',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         color: Pallete.fontColorExpDesc,
@@ -231,16 +257,11 @@ class ExpDisplayFieldState extends State<ExpDisplayField> {
                                   ),
                                   Builder(
                                     builder: (context) {
-                                      var controller = ExpandableController.of(
-                                          context,
-                                          required: true)!;
+                                      var controller = ExpandableController.of(context, required: true)!;
                                       return TextButton(
                                         child: Text(
-                                          controller.expanded
-                                              ? "Show less"
-                                              : "Read more",
-                                          style: const TextStyle(
-                                              color: Colors.blue),
+                                          controller.expanded ? "Show less" : "Read more",
+                                          style: const TextStyle(color: Colors.blue),
                                         ),
                                         onPressed: () {
                                           controller.toggle();

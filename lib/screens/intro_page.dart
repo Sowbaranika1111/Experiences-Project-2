@@ -22,11 +22,9 @@ class IntroPage extends StatelessWidget {
         currentIndex: 0,
       ),
       backgroundColor: Colors.white,
-      body: ListView(
-        children: const [
-          // CategoryScrollingSection(),
-          // SizedBox(height: 20),
-          ExpDisplayField(),
+      body: const Column(
+        children: [
+          Expanded(child: ExpDisplayField()),
         ],
       ),
     );

@@ -10,6 +10,6 @@ class Pallete {
   static const Color inputFieldBordersAftr = Color.fromARGB(255, 65, 23, 86);
   static const Color clickHere = Color.fromARGB(255, 174, 33, 220);
 
-    static const Color fontColorExpDesc = Colors.white;
+    static const Color fontColorExpDesc = Colors.black;
 
 }

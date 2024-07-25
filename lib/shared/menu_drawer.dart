@@ -21,7 +21,6 @@ class MenuDrawer extends StatelessWidget {
       'Home',
       'My shared experiences',
       "Create New Account",
-      "Logout"
     ];
 
     List<Widget> menuItems = [];
@@ -30,7 +29,7 @@ class MenuDrawer extends StatelessWidget {
           decoration: BoxDecoration(color: Color.fromARGB(255, 191, 135, 219)),
           child: Text(
               '"When we share our stories, what it does is, it opens up our hearts for other people to share their stories. And it gives us the sense that we are not alone on this journey."\n - Janine Shepherd',
-              style: TextStyle(color: Colors.white, fontSize: 15))),
+              style: TextStyle(color: Colors.white, fontSize: 13))),
     );
 
     for (var element in menuTitles) {
@@ -47,8 +46,6 @@ class MenuDrawer extends StatelessWidget {
               break;
             case 'Create New Account':
               pages = const SignUpPage();
-              break;
-            case 'Logout':
               break;
           }
           //wheen we close any screen , the drawer opens again, to avoid this use pop() to remove remove drawer from the stack

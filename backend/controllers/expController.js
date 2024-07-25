@@ -18,28 +18,11 @@ const addExp = async (req, res) => {
         video: video_filename
     })
     try {
-        // throw new error("Simulated DB error") // to chk if the file is retained in the uploads
 
         const saveExpToDB = await experiences.save(); //this mthd isused to save data in the db
         res.json({ success: true, message: "Experience added" })
         console.log(saveExpToDB);
 
-
-        // if (saveExpToDB) {
-        //     //Remove the videos from the uploads folder after saving it in database
-        //     fs.unlink(`uploads/${video_filename}`, (err) => {
-        //         if (err) {
-        //             console.error(`Failed to delete the file: ${video_filename}.Error:${err.message}`);
-        //         }
-        //         else {
-        //             console.log(`Successfully deleted the file: ${video_filename}`)
-        //         }
-        //     });
-        // res.json({ success: true, message: "Experience added" })
-        // }
-        // else {
-        //     throw new Error("Failed to save experience to database");
-        // }
     }
     catch (error) {
         console.error("Error in addExp of expController.js: ", error.message);

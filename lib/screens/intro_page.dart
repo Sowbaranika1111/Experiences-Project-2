@@ -18,10 +18,10 @@ class IntroPage extends StatelessWidget {
       ),
       drawer: const MenuDrawer(),
       bottomNavigationBar: const MenuBottom(
-        backgroundColor: Colors.white,
+        backgroundColor: Pallete.appBar,
         currentIndex: 0,
       ),
-      backgroundColor: Pallete.bottomNavigationBar,
+      backgroundColor: Colors.white,
       body: ListView(
         children: const [
           // CategoryScrollingSection(),

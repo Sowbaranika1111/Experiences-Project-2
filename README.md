@@ -21,19 +21,14 @@
 
 ## Screenshots
 
-**_Sign up with validation_**
 ![Signup with Validation](https://github.com/Sowbaranika1111/Experiences-Project-2/blob/main/demo_images/signUp_with_validation.jpeg)
 
-**_Login with validation_**
-![Login](https://github.com/Sowbaranika1111/Experiences-Project/blob/main/ideas_Images/2_login.png)
+![Login with Validation](https://github.com/Sowbaranika1111/Experiences-Project/blob/main/ideas_Images/2_login.png)
 
-**_Latest Experiences on Home Page_**
 ![Home Page](https://github.com/Sowbaranika1111/Experiences-Project-2/blob/main/demo_images/homePg_1.jpeg)
 ![Home Page](https://github.com/Sowbaranika1111/Experiences-Project-2/blob/main/demo_images/homePg_2.jpeg)
 
-**_Form_**
 ![Form](https://github.com/Sowbaranika1111/Experiences-Project-2/blob/main/demo_images/form.jpeg)
 ![Form](https://github.com/Sowbaranika1111/Experiences-Project-2/blob/main/demo_images/videoUploadOptions.jpeg)
 
-**_User Profile_**
 ![User Profile](https://github.com/Sowbaranika1111/Experiences-Project-2/blob/main/demo_images/user_profile.jpeg)

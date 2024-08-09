@@ -38,20 +38,8 @@ const addExp = async (req, res) => {
 // displaying all the experiences video listed in the db
 const listExp = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
-        const skip = (page - 1) * limit;
-
-        const totalCount = await expModel.countDocuments({});
-        const exps = await expModel.find({}).skip(skip).limit(limit);
-
-        res.json({
-            success: true,
-            data: exps,
-            currentPage: page,
-            totalPages: Math.ceil(totalCount / limit),
-            totalCount: totalCount
-        });
+        const exps = await expModel.find({});
+        res.json({ success: true, data: exps })
     }
     catch (error) {
         console.error("Error in listExp of expController.js: ", error.message);
